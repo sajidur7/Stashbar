@@ -49,10 +49,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSM
             .receive(on: RunLoop.main)
             .sink { [weak self] _, _ in self?.updateStatusTitle() }
             .store(in: &cancellables)
-        Store.shared.$clipboardLink
-            .receive(on: RunLoop.main)
-            .sink { [weak self] c in self?.statusItem.button?.appearsDisabled = false; self?.highlightForClipboard(c != nil) }
-            .store(in: &cancellables)
 
         syncTimer = Timer.scheduledTimer(withTimeInterval: 90, repeats: true) { _ in
             Task { @MainActor in if Prefs.shared.autoSync { await Store.shared.syncNow() } }
@@ -141,11 +137,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSM
         } else {
             button.title = ""
         }
-    }
-
-    private func highlightForClipboard(_ on: Bool) {
-        // Subtle cue: the pin gets a dot-free bold variant via contentTintColor when a link waits.
-        statusItem?.button?.contentTintColor = nil
     }
 
     // MARK: Popover

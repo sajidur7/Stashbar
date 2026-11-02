@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stashbar — every link you copy, saved</title>
+<meta name="description" content="A quiet menu-bar app for macOS. Press ⌥S after you copy, and the link is stashed, cleaned and searchable.">
+<meta property="og:title" content="Stashbar — every link you copy, saved">
+<meta property="og:description" content="A quiet menu-bar app for macOS. Copy a link, press ⌥S, find it later.">
+<meta property="og:image" content="/assets/brand/apple-touch-icon.png">
+<link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <a class="brand" href="/"><img src="/assets/brand/app-icon-accent.svg" width="28" height="28" alt="">Stashbar</a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="/privacy">Privacy</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-dark btn-sm" data-download href="#">Download</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="pill">For macOS 13 and later · Free</span>
+        <h1 class="h-display">Every link you copy, <span class="mark">saved.</span></h1>
+        <p class="lead">A quiet menu-bar app for macOS. Press ⌥S after you copy, and the link is stashed, cleaned and searchable.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" data-download href="#">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#0c0a08" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
+            Download for Mac
+          </a>
+          <a class="btn btn-outline" href="#how">How it works</a>
+        </div>
+        <div class="hint"><span class="dot"></span>Try it live: copy any link and paste it into the menu bar on the right.</div>
+      </div>
+
+      <div class="demo" id="demo" aria-label="Interactive Stashbar demo">
+        <div class="menubar">
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12h18M4.21 7.5l15.58 9M7.5 4.21l9 15.58M12 3v18M16.5 4.21l-9 15.58M19.79 7.5L4.21 16.5" stroke="#0c0a08" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+          <div class="pin" title="Stashbar"><img src="/assets/brand/pin-mark-white.svg" width="14" height="14" alt="Stashbar"></div>
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="#0c0a08" stroke-width="1.7"/><path d="M10.2 8.8v6.4l5-3.2z" fill="#0c0a08" stroke="#0c0a08" stroke-linejoin="round"/></svg></div>
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c.6 5.2 4.8 9.4 10 10c-5.2.6-9.4 4.8-10 10c-.6-5.2-4.8-9.4-10-10c5.2-.6 9.4-4.8 10-10z" fill="#0c0a08"/></svg></div>
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 7.5l9 9l-4.5 4v-17l4.5 4l-9 9" stroke="#0c0a08" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18v-6a8 8 0 0 1 16 0v6" stroke="#0c0a08" stroke-width="2" stroke-linecap="round"/><rect x="4" y="13.5" width="4" height="7" rx="2" stroke="#0c0a08" stroke-width="2"/><rect x="16" y="13.5" width="4" height="7" rx="2" stroke="#0c0a08" stroke-width="2"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="#0c0a08" stroke="#0c0a08" stroke-linejoin="round" d="M12 19.5L9.45 16.95A3.6 3.6 0 0 1 14.55 16.95ZM5.78 13.28A8.8 8.8 0 0 1 18.22 13.28L15.96 15.54A5.6 5.6 0 0 0 8.04 15.54ZM2.1 9.6A14 14 0 0 1 21.9 9.6L19.64 11.86A10.8 10.8 0 0 0 4.36 11.86Z"/></svg></div>
+          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" stroke="#0c0a08" stroke-width="2.1"/><path d="M15 15l4.5 4.5" stroke="#0c0a08" stroke-width="2.1" stroke-linecap="round"/></svg></div>
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="7.5" rx="3.75" stroke="#0c0a08" stroke-width="1.7"/><circle cx="7.4" cy="7.25" r="2.1" fill="#0c0a08"/><rect x="2.65" y="12.15" width="18.7" height="9.2" rx="4.6" fill="#0c0a08"/><circle cx="16.6" cy="16.75" r="2.3" fill="#fff"/></svg></div>
+          <span class="clock"></span>
+        </div>
+        <div class="pop">
+          <div id="demo-top"></div>
+          <label class="search">
+            <img src="/assets/icons/search.svg" width="15" height="15" alt="" style="opacity:.55">
+            <input id="demo-search" placeholder="Search links" aria-label="Search links">
+          </label>
+          <div id="demo-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:620px">
+        <span class="eyebrow">How it works</span>
+        <h2 class="h2">Three keys. No lost links.</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-top"><span class="eyebrow">01</span><span class="key">⌘C</span></div><h3 class="h3">Copy a link</h3><p class="body-muted">From Safari, Slack, X or anywhere else. It never leaves your Mac.</p></div>
+        <div class="step"><div class="step-top"><span class="eyebrow">02</span><span class="key">⌥S</span></div><h3 class="h3">Stash it</h3><p class="body-muted">The popover opens with the link ready. Press Return and trackers are stripped.</p></div>
+        <div class="step"><div class="step-top"><span class="eyebrow">03</span><span class="key">⌘E</span></div><h3 class="h3">Find it later</h3><p class="body-muted">Search from the menu bar, or open the canvas to browse every link as a card.</p></div>
+      </div>
+    </section>
+
+    <section class="section cards">
+      <div class="card card-dark">
+        <img src="/assets/icons/shield-check.svg" width="28" height="28" alt="" style="filter:invert(1)">
+        <div><h3>Private by default.</h3><p class="body-muted">Your clipboard is read on your Mac, only to spot links. 46 kinds of tracking parameters are removed before anything is saved.</p></div>
+      </div>
+      <div class="card card-beige">
+        <img src="/assets/icons/user-round.svg" width="28" height="28" alt="">
+        <div><h3>No account needed.</h3><p class="body-muted">Start as a guest. Sign in with Apple or Google later and every link syncs across your Macs.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="install">
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:720px">
+        <span class="eyebrow">Install</span>
+        <h2 class="h2">Up and running in a minute.</h2>
+        <p class="body-muted">Stashbar is free and independent, so it isn’t sold through the App Store. macOS asks you to confirm it once on first launch.</p>
+      </div>
+      <div class="install">
+        <div class="install-step"><span class="num">1</span><b>Download and drag</b><span class="body-muted">Open <code>Stashbar.dmg</code> and drag Stashbar into Applications.</span></div>
+        <div class="install-step"><span class="num">2</span><b>Open it once</b><span class="body-muted">Open Stashbar from Applications. If macOS says it can’t verify the developer, click <b>Done</b>.</span></div>
+        <div class="install-step"><span class="num">3</span><b>Click “Open Anyway”</b><span class="body-muted">System Settings → Privacy &amp; Security → scroll down → <b>Open Anyway</b>. You only do this once.</span></div>
+      </div>
+    </section>
+
+    <section class="section faq" id="faq">
+      <h2 class="h2">Questions</h2>
+      <div class="faq-list">
+        <div class="faq-item"><div class="faq-q">Is it free?</div><p class="body-muted">Yes. Download, drag to Applications, done.</p></div>
+        <div class="faq-item"><div class="faq-q">Do you read my clipboard?</div><p class="body-muted">Only to spot links, and only on your Mac.</p></div>
+        <div class="faq-item"><div class="faq-q">What if I delete the app?</div><p class="body-muted">Guests lose their links. Signed-in users get them all back.</p></div>
+        <div class="faq-item"><div class="faq-q">Which Macs does it support?</div><p class="body-muted">macOS 13 Ventura or later, on Apple silicon and Intel.</p></div>
+        <div class="faq-item"><div class="faq-q">How do I quit it completely?</div><p class="body-muted">Right-click the pin in the menu bar and choose <b>Quit Stashbar</b>. It stops fully — nothing keeps running in the background.</p></div>
+      </div>
+    </section>
+
+    <section class="final">
+      <img src="/assets/brand/app-icon-accent.svg" width="64" height="64" alt="">
+      <h2 class="h-final">Stop losing links.</h2>
+      <a class="btn btn-primary" data-download href="#">Download for Mac</a>
+      <span class="meta" data-version style="color:var(--muted-dark)">macOS 13+ · Apple silicon &amp; Intel</span>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="/" style="font-size:15px"><img src="/assets/brand/pin-mark-ink.svg" width="15" height="15" alt="">Stashbar</a>
+    <nav><a href="/privacy">Privacy</a><a href="/help">Help</a><a href="https://github.com/sajidur7/Stashbar/releases">Changelog</a><a href="https://github.com/sajidur7/Stashbar">GitHub</a></nav>
+    <span>© 2026 Stashbar</span>
+  </footer>
+</div>
+<script type="module" src="/js/site.js"></script>
+</body>
+</html>

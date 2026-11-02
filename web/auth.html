@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Sign in to Stashbar</title>
+<link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body class="auth-body">
+<main class="auth-card" id="card">
+  <img src="/assets/brand/app-icon-accent.svg" width="56" height="56" alt="">
+  <h1 id="title">Sign in to Stashbar</h1>
+  <p id="sub">Continue to back up your links and sync them across your Macs.</p>
+  <div id="actions" style="display:flex;flex-direction:column;gap:10px"></div>
+  <div id="err" class="auth-err" hidden></div>
+  <p style="font-size:12px">We store the links you pin — never your browsing history. <a href="/privacy">Privacy</a></p>
+</main>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import { getAuth, GoogleAuthProvider, OAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, browserSessionPersistence, setPersistence }
+  from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import { firebaseConfig, isConfigured } from '/js/firebase-config.js';
+
+const params = new URLSearchParams(location.search);
+// Remember the app's loopback details across a redirect sign-in.
+if (params.get('port')) sessionStorage.setItem('sb_handoff', JSON.stringify({ port: params.get('port'), state: params.get('state'), provider: params.get('provider') }));
+const handoff = JSON.parse(sessionStorage.getItem('sb_handoff') || '{}');
+const port = Number(handoff.port);
+const providerName = handoff.provider === 'apple' ? 'apple' : 'google';
+
+const $ = id => document.getElementById(id);
+const showError = msg => { $('err').hidden = false; $('err').textContent = msg; };
+
+const appleSvg = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#0c0a08" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>';
+const googleSvg = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><g stroke="#0c0a08" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 12h5a5 5 0 1 1-1.464-3.536"/></g></svg>';
+
+function handBack(query) {
+  const url = `http://127.0.0.1:${port}/callback?${new URLSearchParams({ state: handoff.state || '', ...query })}`;
+  sessionStorage.removeItem('sb_handoff');
+  location.replace(url);
+}
+
+function done(user, providerId) {
+  $('title').textContent = 'Returning to Stashbar…';
+  $('sub').textContent = `Signed in as ${user.email || user.displayName || 'you'}.`;
+  $('actions').innerHTML = '<div class="spinner"></div>';
+  const refresh = user.refreshToken;
+  signOut(auth).finally(() => handBack({ refresh_token: refresh, provider: providerId }));
+}
+
+function friendly(e) {
+  const c = (e && e.code) || '';
+  if (c.includes('popup-closed') || c.includes('cancelled-popup')) return null;
+  if (c.includes('popup-blocked')) return 'Your browser blocked the sign-in window. Allow pop-ups for this site, or try again.';
+  if (c.includes('operation-not-allowed')) return `${providerName === 'apple' ? 'Apple' : 'Google'} sign-in isn’t switched on in Firebase yet.`;
+  if (c.includes('unauthorized-domain')) return 'This website isn’t on Firebase’s list of authorised domains yet.';
+  if (c.includes('account-exists-with-different-credential')) return 'You already use this email with the other provider. Sign in with that one instead.';
+  if (c.includes('network')) return 'Network problem. Check your connection and try again.';
+  return (e && e.message) || 'Something went wrong. Try again.';
+}
+
+let auth;
+if (!port || port < 1024 || port > 65535) {
+  $('title').textContent = 'Open Stashbar to sign in';
+  $('sub').textContent = 'This page is opened by the Stashbar app. Start sign-in from the app’s welcome screen or Settings → Account.';
+  $('actions').innerHTML = '<a class="btn btn-primary" href="/">Get Stashbar</a>';
+} else if (!isConfigured) {
+  showError('Sign-in isn’t configured yet (missing Firebase web config).');
+} else {
+  const app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  await setPersistence(auth, browserSessionPersistence);
+  const provider = providerName === 'apple' ? new OAuthProvider('apple.com') : new GoogleAuthProvider();
+  if (providerName === 'apple') { provider.addScope('email'); provider.addScope('name'); }
+  else provider.setCustomParameters({ prompt: 'select_account' });
+  const providerId = providerName === 'apple' ? 'apple.com' : 'google.com';
+
+  // Returning from a redirect sign-in?
+  try {
+    const r = await getRedirectResult(auth);
+    if (r && r.user) { done(r.user, providerId); }
+  } catch (e) { const m = friendly(e); if (m) showError(m); }
+
+  const label = providerName === 'apple' ? 'Continue with Apple' : 'Continue with Google';
+  $('actions').innerHTML = `<button class="btn ${providerName === 'apple' ? 'btn-primary' : 'btn-outline'}" id="go">${providerName === 'apple' ? appleSvg : googleSvg}${label}</button>
+    <button class="btn btn-outline" id="cancel" style="border:0;height:40px">Cancel</button>`;
+  $('go').onclick = async () => {
+    $('err').hidden = true;
+    try {
+      const r = await signInWithPopup(auth, provider);
+      done(r.user, providerId);
+    } catch (e) {
+      if (e && e.code && e.code.includes('popup-blocked')) { await signInWithRedirect(auth, provider); return; }
+      const m = friendly(e);
+      if (m) showError(m);
+    }
+  };
+  $('cancel').onclick = () => handBack({ error: 'cancelled' });
+}
+</script>
+</body>
+</html>
