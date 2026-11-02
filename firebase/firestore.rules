@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Each person can only read and write their own data.
+    match /users/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name','email','provider','photo','monogramStyle','updatedAt'])
+        && (!('photo' in request.resource.data) || request.resource.data.photo == null
+            || request.resource.data.photo.size() < 400000);
+
+      match /links/{linkId} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create, update: if request.auth != null && request.auth.uid == uid
+          && request.resource.data.url is string
+          && request.resource.data.url.size() < 4096
+          && request.resource.data.title.size() < 1000
+          && request.resource.data.note.size() < 20000
+          && request.resource.data.tags.size() <= 50;
+      }
+
+      match /devices/{deviceId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // Everything else stays locked.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,69 @@
+name: Build & release Mac app
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - ".github/workflows/release.yml"
+  pull_request:
+    paths:
+      - "app/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: swift --version
+
+      - name: Unit tests
+        working-directory: app
+        run: swift test
+
+      - name: Build app + dmg
+        env:
+          VERSION: 1.0.${{ github.run_number }}
+          BUILD: ${{ github.run_number }}
+        run: bash app/scripts/build_app.sh
+
+      - name: Smoke test (launch, then quit)
+        run: |
+          APP=app/build/Stashbar.app
+          "$APP/Contents/MacOS/StashBar" &
+          PID=$!
+          sleep 8
+          if ! kill -0 $PID 2>/dev/null; then echo "App exited early"; exit 1; fi
+          osascript -e 'tell application id "app.stashbar.mac" to quit' || kill $PID
+          sleep 3
+          if kill -0 $PID 2>/dev/null; then echo "App did not quit"; kill -9 $PID; exit 1; fi
+          echo "Launched and quit cleanly"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Stashbar-dmg
+          path: app/build/Stashbar.dmg
+
+      - name: Publish GitHub release
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: 1.0.${{ github.run_number }}
+        run: |
+          gh release create "v$VERSION" app/build/Stashbar.dmg \
+            --title "Stashbar $VERSION" \
+            --notes "Download **Stashbar.dmg**, open it and drag Stashbar to Applications.
+
+          First launch: macOS will say it can't verify the developer. Open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** (once). Commit: ${GITHUB_SHA::7}" \
+            --latest
