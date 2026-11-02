@@ -5,7 +5,7 @@ import Foundation
 enum Config {
     static let firebaseProjectID = "stashbar-a2455"
     /// Firebase console → Project settings → General → Your apps → Web app → apiKey
-    static let firebaseAPIKey = "FIREBASE_API_KEY"
+    static let firebaseAPIKey = "AIzaSyCg6Pt2w706WGGkBJHxYqms7SVcTh-jEMA"
 
     /// Hosted sign-in page (web/auth.html on Vercel). It runs Firebase's Google / Apple web flow
     /// and hands the session back to the app on a 127.0.0.1 loopback port.
@@ -18,7 +18,7 @@ enum Config {
 
     /// Apple sign-in needs an Apple Developer account (Services ID + key in Firebase).
     /// Flip to true once it's configured in the Firebase console.
-    static let appleSignInEnabled = true
+    static let appleSignInEnabled = false
 
     static var isFirebaseConfigured: Bool { !firebaseAPIKey.isEmpty && firebaseAPIKey != "FIREBASE_API_KEY" }
 

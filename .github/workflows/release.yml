@@ -50,6 +50,14 @@ jobs:
           if kill -0 $PID 2>/dev/null; then echo "App did not quit"; kill -9 $PID; exit 1; fi
           echo "Launched and quit cleanly"
 
+      - name: Check website + sign-in page (non-blocking)
+        continue-on-error: true
+        run: |
+          SITE=$(grep -o 'https://[a-z0-9.-]*vercel.app' app/Sources/StashBar/Config.swift | head -1)
+          for path in "" /auth /help /privacy /download; do
+            echo "$SITE$path -> $(curl -s -o /dev/null -w '%{http_code}' "$SITE$path")"
+          done
+
       - uses: actions/upload-artifact@v4
         with:
           name: Stashbar-dmg
