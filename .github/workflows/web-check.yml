@@ -96,10 +96,15 @@ jobs:
             const p = await b.newPage();
             const errs = [];
             p.on('pageerror', e => errs.push(e.message));
-            await p.goto('http://localhost:8799/auth.html?provider=google&state=ci', { waitUntil: 'networkidle' });
-            const popupP = p.waitForEvent('popup', { timeout: 15000 }).catch(() => null);
-            await p.click('#go');
-            const pop = await popupP;
+            // The page opens the popup on load; if the browser blocks that, click the button.
+            const autoP = p.waitForEvent('popup', { timeout: 8000 }).catch(() => null);
+            await p.goto('http://localhost:8799/auth.html?provider=google&state=ci');
+            let pop = await autoP;
+            if (!pop) {
+              const clickP = p.waitForEvent('popup', { timeout: 15000 }).catch(() => null);
+              await p.click('#go');
+              pop = await clickP;
+            }
             let url = '';
             if (pop) { try { for (let i = 0; i < 20 && !/accounts\.google\.com/.test(pop.url()); i++) await pop.waitForTimeout(500); url = pop.url(); } catch (e) { url = 'closed'; } }
             await p.waitForTimeout(1500);
