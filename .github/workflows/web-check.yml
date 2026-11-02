@@ -1,0 +1,58 @@
+name: Check live sign-in page
+
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", "vercel.json", ".github/workflows/web-check.yml"]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+
+jobs:
+  auth-page:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Wait for Vercel to deploy this commit
+        run: sleep 60
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install playwright@1.48.2 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: Open /auth and start Google sign-in
+        run: |
+          cat > check.js <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const site = 'https://stashbar.vercel.app';
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            const errors = [];
+            page.on('pageerror', e => errors.push(e.message));
+            await page.goto(`${site}/auth?provider=google&port=49152&state=ci-check`, { waitUntil: 'networkidle' });
+            const title = await page.textContent('#title');
+            console.log('Page title:', title);
+            const popupPromise = page.waitForEvent('popup', { timeout: 15000 }).catch(() => null);
+            await page.click('#go');
+            const popup = await popupPromise;
+            let ok = false;
+            if (popup) {
+              await popup.waitForLoadState('domcontentloaded').catch(() => {});
+              for (let i = 0; i < 20 && !/accounts\.google\.com/.test(popup.url()); i++) await popup.waitForTimeout(500);
+              console.log('Popup URL:', popup.url().slice(0, 80));
+              ok = /accounts\.google\.com/.test(popup.url());
+            }
+            const err = await page.$eval('#err', el => el.hidden ? '' : el.textContent).catch(() => '');
+            if (err) console.log('Page error message:', err);
+            if (errors.length) console.log('JS errors:', errors.join(' | '));
+            for (const p of ['', '/help', '/privacy']) {
+              const r = await page.goto(site + p);
+              console.log(site + p, r.status());
+            }
+            await browser.close();
+            if (!ok) { console.log('FAIL: Google sign-in did not open. If the message mentions authorised domains, add stashbar.vercel.app in Firebase → Authentication → Settings → Authorized domains.'); process.exit(1); }
+            console.log('PASS: Google account picker opened from the live /auth page');
+          })();
+          EOF
+          node check.js
