@@ -39,9 +39,12 @@ jobs:
             let ok = false;
             if (popup) {
               await popup.waitForLoadState('domcontentloaded').catch(() => {});
-              for (let i = 0; i < 20 && !/accounts\.google\.com/.test(popup.url()); i++) await popup.waitForTimeout(500);
-              console.log('Popup URL:', popup.url().slice(0, 80));
-              ok = /accounts\.google\.com/.test(popup.url());
+              try {
+                for (let i = 0; i < 20 && !/accounts\.google\.com/.test(popup.url()); i++) await popup.waitForTimeout(500);
+                console.log('Popup URL:', popup.url().slice(0, 80));
+                ok = /accounts\.google\.com/.test(popup.url());
+              } catch (e) { console.log('Popup closed early (Firebase rejected the sign-in)'); }
+              await page.waitForTimeout(2000);
             }
             const err = await page.$eval('#err', el => el.hidden ? '' : el.textContent).catch(() => '');
             if (err) console.log('Page error message:', err);
