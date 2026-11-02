@@ -61,7 +61,7 @@ button{font:inherit;color:inherit}
 .menubar .ic svg{width:17px;height:17px}
 .menubar .pin{width:28px;height:22px;border-radius:var(--r-s);background:var(--ink);display:grid;place-items:center}
 .menubar .clock{padding-left:4px;white-space:nowrap}
-.pop{position:relative;margin:4px 0 20px 20px;width:372px;max-width:calc(100% - 40px);border-radius:var(--r-l);background:#fff;border:1px solid var(--line);box-shadow:0 24px 60px rgba(12,10,8,.14);padding:12px;display:flex;flex-direction:column;gap:6px}
+.pop{position:relative;margin:4px 20px 20px;border-radius:var(--r-l);background:#fff;border:1px solid var(--line);box-shadow:0 24px 60px rgba(12,10,8,.14);padding:12px;display:flex;flex-direction:column;gap:6px}
 .clip{padding:16px;border-radius:var(--r-c);background:var(--ink);color:#fff;display:flex;flex-direction:column;gap:10px}
 .clip-top{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted-dark)}
 .clip-top span{flex:1}
