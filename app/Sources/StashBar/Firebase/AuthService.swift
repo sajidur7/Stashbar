@@ -75,10 +75,12 @@ final class AuthService {
         let server = LoopbackServer()
         listener = server
         let port = try await server.start()
-        var comps = URLComponents(url: Config.signInPage, resolvingAgainstBaseURL: false)!
+        // The sign-in page is served by the app itself on http://localhost:<port>/auth.
+        // "localhost" is on every Firebase project's authorised-domain list by default,
+        // so this works without any extra console setup.
+        var comps = URLComponents(string: "http://localhost:\(port)/auth")!
         comps.queryItems = [
             .init(name: "provider", value: provider == .google ? "google" : "apple"),
-            .init(name: "port", value: String(port)),
             .init(name: "state", value: state),
         ]
         await MainActor.run { _ = NSWorkspace.shared.open(comps.url!) }
@@ -195,7 +197,8 @@ final class LoopbackServer {
 
     func start() async throws -> UInt16 {
         let params = NWParameters.tcp
-        params.requiredLocalEndpoint = NWEndpoint.hostPort(host: "127.0.0.1", port: .any)
+        // Loopback only (both 127.0.0.1 and ::1, since browsers may resolve "localhost" to either).
+        params.requiredInterfaceType = .loopback
         params.allowLocalEndpointReuse = true
         let l = try NWListener(using: params)
         listener = l
@@ -249,7 +252,11 @@ final class LoopbackServer {
             let parts = line.split(separator: " ")
             guard parts.count >= 2, parts[0] == "GET" else { conn.cancel(); return }
             let target = String(parts[1])
-            guard target.hasPrefix("/callback"), let comps = URLComponents(string: "http://127.0.0.1" + target) else {
+            if target.hasPrefix("/auth") {
+                self.respond(conn, status: "200 OK", body: SignInPage.html)
+                return
+            }
+            guard target.hasPrefix("/callback"), let comps = URLComponents(string: "http://localhost" + target) else {
                 self.respond(conn, status: "404 Not Found", body: "Not found")
                 return
             }

@@ -3,13 +3,15 @@ name: Check live sign-in page
 on:
   push:
     branches: [main]
-    paths: ["web/**", "vercel.json", ".github/workflows/web-check.yml"]
+    paths: ["web/**", "vercel.json", "app/Sources/StashBar/Firebase/**", ".github/workflows/web-check.yml"]
   workflow_dispatch:
   schedule:
     - cron: "0 6 * * *"
 
 jobs:
   auth-page:
+    # Website copy of /auth only works once stashbar.vercel.app is an authorised domain in Firebase.
+    continue-on-error: true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -59,3 +61,53 @@ jobs:
           })();
           EOF
           node check.js
+
+  app-sign-in-page:
+    # Serves the Mac app's own sign-in page (SignInPage.swift) on http://localhost, exactly like the app does,
+    # and checks Google's account picker opens.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Playwright
+        run: |
+          npm init -y >/dev/null
+          npm install playwright@1.48.2 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: Extract page and serve on localhost
+        run: |
+          python3 - <<'PY'
+          import re
+          s = open('app/Sources/StashBar/Firebase/SignInPage.swift').read()
+          html = s.split('#"""', 1)[1].split('"""#', 1)[0]
+          key = re.search(r'firebaseAPIKey = "([^"]+)"', open('app/Sources/StashBar/Config.swift').read()).group(1)
+          html = "\n".join(l[4:] if l.startswith("    ") else l for l in html.splitlines())
+          html = html.replace('__API_KEY__', key).replace('__PROJECT__', 'stashbar-a2455')
+          open('auth.html', 'w').write(html)
+          PY
+          (python3 -m http.server 8799 >/dev/null 2>&1 &)
+          sleep 1
+      - name: Click Continue with Google
+        run: |
+          cat > local.js <<'EOF'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            const p = await b.newPage();
+            const errs = [];
+            p.on('pageerror', e => errs.push(e.message));
+            await p.goto('http://localhost:8799/auth.html?provider=google&state=ci', { waitUntil: 'networkidle' });
+            const popupP = p.waitForEvent('popup', { timeout: 15000 }).catch(() => null);
+            await p.click('#go');
+            const pop = await popupP;
+            let url = '';
+            if (pop) { try { for (let i = 0; i < 20 && !/accounts\.google\.com/.test(pop.url()); i++) await pop.waitForTimeout(500); url = pop.url(); } catch (e) { url = 'closed'; } }
+            await p.waitForTimeout(1500);
+            const err = await p.$eval('#e', el => el.hidden ? '' : el.textContent);
+            console.log('Popup:', url.slice(0, 70), '| page error:', err || '-', '| js errors:', errs.join(' | ') || '-');
+            await b.close();
+            if (!/accounts\.google\.com/.test(url)) { console.log('FAIL'); process.exit(1); }
+            console.log('PASS: app sign-in page opens Google account picker from localhost');
+          })();
+          EOF
+          node local.js
