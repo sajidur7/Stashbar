@@ -3,129 +3,1035 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stashbar — every link you copy, saved</title>
+<title>Stashbar · every link you copy, saved</title>
 <meta name="description" content="A quiet menu-bar app for macOS. Press ⌥S after you copy, and the link is stashed, cleaned and searchable.">
-<meta property="og:title" content="Stashbar — every link you copy, saved">
+<meta property="og:title" content="Stashbar · every link you copy, saved">
 <meta property="og:description" content="A quiet menu-bar app for macOS. Copy a link, press ⌥S, find it later.">
 <meta property="og:image" content="/assets/brand/apple-touch-icon.png">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/site.css">
+<link rel="preload" href="/assets/macos-day.webp?v=18" as="image" type="image/webp">
+<link rel="stylesheet" href="/css/site.css?v=18">
 </head>
 <body>
-<div class="wrap">
+
+<!-- Navbar: hidden at scrollY = 0 while Mac desktop is fullscreen, slides in smoothly on scroll -->
+<div class="nav-wrap hero-reveal-nav" id="heroTop">
   <header class="nav">
-    <a class="brand" href="/"><img src="/assets/brand/app-icon-accent.svg" width="28" height="28" alt="">Stashbar</a>
+    <a class="brand" href="/">
+      <img src="/assets/brand/app-icon-accent.svg" width="24" height="24" alt="">
+      <span>Stashbar</span>
+    </a>
     <nav class="nav-links" aria-label="Main">
+      <a href="#demo">Desktop</a>
+      <a href="#features">Features</a>
       <a href="#how">How it works</a>
-      <a href="/privacy">Privacy</a>
       <a href="#faq">FAQ</a>
+      <a href="/help">Help</a>
+      <a href="/privacy">Privacy</a>
     </nav>
-    <a class="btn btn-dark btn-sm" data-download href="#">Download</a>
+    <div class="nav-end">
+      <a class="nav-get-btn" data-download href="#">Get Stashbar</a>
+    </div>
   </header>
+</div>
 
+<!-- Scroll-Pin Hero: starts 100vw × 100vh full Mac screen, shrinks into framed rounded desktop on scroll -->
+<div class="hero-pin" id="heroPin">
+  <div class="hero-stage-wrap" id="demo">
+    <div class="mac-stage is-fullscreen-init" id="heroStage" aria-label="Interactive Stashbar macOS Desktop">
+      <img class="mac-wallpaper" src="/assets/macos-day.webp?v=13" alt="" decoding="sync" fetchpriority="high">
+
+      <!-- Top macOS Menu Bar -->
+      <div class="mac-menubar">
+        <div class="mac-menu-left">
+          <span class="mac-apple" aria-hidden="true">&#63743;</span>
+          <span class="mac-app-name">Stashbar</span>
+          <span class="mac-menu-item hide-narrow">File</span>
+          <span class="mac-menu-item hide-narrow">Edit</span>
+          <span class="mac-menu-item hide-narrow">View</span>
+          <span class="mac-menu-item hide-narrow">Links</span>
+          <span class="mac-menu-item hide-narrow">Window</span>
+          <span class="mac-menu-item hide-narrow">Help</span>
+        </div>
+        <div class="mac-menu-right">
+          <button class="mac-menubar-logo" id="menubarStashBtn" type="button" title="Open Stashbar menu-bar popover (⌥S)" aria-label="Open Stashbar popover" aria-expanded="false">
+            <img src="/assets/brand/pin-mark-ink.svg" width="16" height="16" alt="">
+          </button>
+          <span class="mac-clock" id="macClock">Sat, Nov 7  10:30 AM</span>
+        </div>
+      </div>
+
+      <!-- Top-Right Stashbar Menu-Bar Popover (PopoverView.swift — 380px wide) -->
+      <div class="mac-popover-wrap" id="macPopoverWrap" role="dialog" aria-label="Stashbar menu-bar popover">
+        <div class="sb-popover">
+          <div id="pop-clipboard-slot"></div>
+
+          <div class="sb-pop-searchrow">
+            <label class="sb-search-field" style="height:40px">
+              <img class="s-ic" src="/assets/icons/search.svg" alt="">
+              <input id="pop-search-input" placeholder="Search 6 links" aria-label="Search stash">
+            </label>
+            <button class="sb-pop-plus" type="button" id="pop-plus-btn" title="Add a link manually">
+              <img src="/assets/icons/plus.svg" alt="Add a link">
+            </button>
+          </div>
+
+          <div class="sb-pop-label">
+            <span class="sb-sec-label" id="pop-section-label">RECENT</span>
+            <button class="sb-pop-close-inline" type="button" id="popCloseBtn" title="Close popover (Esc)" aria-label="Close popover">&times;</button>
+          </div>
+
+          <div class="sb-pop-list" id="pop-rows-list"></div>
+
+          <div class="sb-pop-samples" id="pop-samples-bar">
+            <span>Simulate copy:</span>
+            <button class="sb-sample-chip" type="button" data-sample-clip="https://www.nytimes.com/2026/10/30/technology/menu-bar-apps-are-back.html?utm_source=x&utm_medium=social&smid=tw-share">
+              nytimes.com (+3)
+            </button>
+            <button class="sb-sample-chip" type="button" data-sample-clip="https://github.com/apple/swift-argument-parser?utm_source=newsletter&fbclid=IwAR9">
+              github.com (+2)
+            </button>
+          </div>
+
+          <div class="sb-pop-footer">
+            <div class="sb-guest-avatar sz-20">
+              <img src="/assets/icons/user-round.svg" alt="">
+            </div>
+            <span>Guest · this Mac only</span>
+            <button class="signin-link" type="button" id="pop-signin-btn">Sign in</button>
+            <span style="flex:1"></span>
+            <button class="icon-act" type="button" id="pop-go-canvas" title="Open canvas (⌘E)">
+              <img src="/assets/icons/layout-grid.svg" alt="Open canvas">
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Vertical Frosted Dock + Main Stashbar Window + Under-Window Download CTA -->
+      <div class="mac-app-stack" id="macAppStack">
+        <!-- Left Vertical Frosted Glass Dock (Canvas, Link detail, Theme & Popover controls) -->
+        <div class="mac-dock" role="toolbar" aria-label="Stashbar desktop controls">
+          <button class="mac-dock-btn is-active" type="button" data-app-tab="canvas" title="Canvas view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <span>Canvas</span>
+          </button>
+          <button class="mac-dock-btn" type="button" data-app-tab="detail" title="Link detail view">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+            <span>Link detail</span>
+          </button>
+          <span class="mac-dock-sep" aria-hidden="true"></span>
+          <button class="mac-dock-btn" type="button" id="dockThemeBtn" title="Switch app theme">
+            <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
+            <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span>Switch theme</span>
+          </button>
+          <button class="mac-dock-btn" type="button" id="dockPopoverBtn" title="Open menu-bar popover (⌥S)">
+            <img src="/assets/brand/pin-mark-white.svg" width="14" height="14" alt="">
+            <span>Popover · ⌥S</span>
+          </button>
+        </div>
+
+        <div class="mac-main-col">
+          <div class="mac-window-host" id="macWindowHost">
+          <div class="mac-glass-frame">
+            <div class="mac-glass-topbar" aria-hidden="true">
+              <div class="mac-glass-dots"><span></span><span></span><span></span></div>
+              <div class="mac-glass-pill">Stashbar.app</div>
+              <div></div>
+            </div>
+            <!-- Screen 1 & 2: CanvasRoot (CanvasView.swift + LinkDetailView.swift) -->
+            <div class="sb-window sb-mac-window" id="pane-canvas">
+              <aside class="sb-sidebar">
+                <div class="sb-side-brand">
+                <img src="/assets/brand/pin-mark-white.svg" width="20" height="20" alt="">
+                <span>Stashbar</span>
+              </div>
+
+              <div class="sb-nav-list" id="sb-sidebar-views">
+                <button class="sb-nav-row is-active" type="button" data-view="all">
+                  <img src="/assets/icons/library.svg" alt="">
+                  <span>All links</span>
+                  <span class="cnt" data-cnt="all">6</span>
+                </button>
+                <button class="sb-nav-row" type="button" data-view="pinned">
+                  <img src="/assets/icons/pin.svg" alt="">
+                  <span>Pinned</span>
+                  <span class="cnt" data-cnt="pinned">3</span>
+                </button>
+                <button class="sb-nav-row" type="button" data-view="unopened">
+                  <img src="/assets/icons/circle-dashed.svg" alt="">
+                  <span>Unopened</span>
+                  <span class="cnt" data-cnt="unopened">2</span>
+                </button>
+                <button class="sb-nav-row" type="button" data-view="archive">
+                  <img src="/assets/icons/archive.svg" alt="">
+                  <span>Archive</span>
+                  <span class="cnt" data-cnt="archive">0</span>
+                </button>
+              </div>
+
+              <div class="sb-tags-section">
+                <div class="sb-sec-label" style="color:var(--muted-dark);padding:0 12px 6px">TAGS</div>
+                <div id="sb-sidebar-tags" class="sb-tags-scroll"></div>
+              </div>
+
+              <div class="sb-acct-card">
+                <div class="sb-acct-top">
+                  <div class="sb-guest-avatar on-dark">
+                    <img src="/assets/icons/user-round.svg" alt="">
+                  </div>
+                  <div>
+                    <div style="font-size:13px;color:#fff;line-height:1.25">Guest</div>
+                    <div style="font-size:12px;color:var(--muted-dark);line-height:1.25">this Mac only</div>
+                  </div>
+                </div>
+                <button class="sb-btn-pri" type="button" style="height:36px;width:100%;font-size:13px" id="canvas-signin-btn">Sign in to back up</button>
+              </div>
+            </aside>
+
+            <!-- Dynamic Right Side: either CanvasMain or LinkDetailView -->
+            <div class="sb-right-area" id="canvas-right-area">
+              <!-- Screen 1: CanvasMain -->
+              <div class="sb-canvas-main" id="canvas-grid-view">
+                <div class="sb-canvas-toolbar">
+                  <label class="sb-search-field">
+                    <img class="s-ic" src="/assets/icons/search.svg" alt="">
+                    <span id="canvas-token-slot"></span>
+                    <input id="canvas-search-input" placeholder="Search titles, sites, notes" aria-label="Search titles, sites, notes">
+                  </label>
+                  <button class="sb-btn-out" type="button" id="canvas-export-btn">
+                    <img src="/assets/icons/share.svg" width="15" height="15" alt="">
+                    <span>Export</span>
+                  </button>
+                  <button class="sb-btn-pri" type="button" id="canvas-add-btn">
+                    <img src="/assets/icons/plus.svg" width="15" height="15" alt="">
+                    <span>Add link</span>
+                  </button>
+                </div>
+
+                <div class="sb-canvas-header">
+                  <h3 id="canvas-heading">All links</h3>
+                  <span class="sub" id="canvas-subheading"></span>
+                  <span class="meta-right" id="canvas-count-label">6 · newest first</span>
+                </div>
+
+                <div class="sb-cards-grid" id="sb-cards-container"></div>
+              </div>
+
+              <!-- Screen 2: LinkDetailView (LinkDetailView.swift) -->
+              <div class="sb-detail-view" id="canvas-detail-view" style="display:none">
+                <div class="sb-detail-left">
+                  <div class="sb-detail-backbar">
+                    <button class="sb-back-btn" type="button" id="detail-back-btn">
+                      <img src="/assets/icons/arrow-left.svg" alt="">
+                      <span id="detail-back-label">All links</span>
+                    </button>
+                  </div>
+                  <div class="sb-detail-preview-box">
+                    <img class="big-logo" id="detail-big-logo" src="/assets/icons/figma.svg" alt="">
+                    <span class="sb-detail-preview-caption" id="detail-preview-caption">page preview · figma.com</span>
+                  </div>
+                </div>
+
+                <div class="sb-detail-right">
+                  <div class="sb-detail-toprow">
+                    <span class="sb-sec-label">LINK DETAIL</span>
+                    <button class="sb-icon-btn sz-32" type="button" id="detail-pin-btn" title="Pin to top (⌘P)">
+                      <img src="/assets/icons/pin.svg" alt="Pin">
+                    </button>
+                    <button class="sb-icon-btn sz-32" type="button" id="detail-archive-btn" title="Archive">
+                      <img src="/assets/icons/archive.svg" alt="Archive">
+                    </button>
+                    <button class="sb-icon-btn sz-32" type="button" id="detail-delete-btn" title="Delete">
+                      <img src="/assets/icons/trash-2.svg" alt="Delete">
+                    </button>
+                  </div>
+
+                  <div>
+                    <h4 class="sb-detail-title" id="detail-title">Variables &amp; modes: a practical guide</h4>
+                    <div class="sb-detail-domain-row">
+                      <img id="detail-small-logo" src="/assets/icons/figma.svg" alt="">
+                      <span id="detail-domain-meta">figma.com · stashed 2h ago</span>
+                    </div>
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <span class="sb-sec-label">CLEAN URL</span>
+                      <span id="detail-trackers-badge" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tok-muted);text-transform:uppercase">
+                        <img class="tok-ic" src="/assets/icons/shield-check.svg" width="12" height="12" alt="" style="opacity:.65">
+                        <span id="detail-trackers-count">3 TRACKERS REMOVED</span>
+                      </span>
+                    </div>
+                    <div class="sb-clean-url-box" id="detail-clean-url">https://figma.com/blog/variables-and-modes</div>
+                    <div class="sb-strike-wrap" id="detail-strike-list"></div>
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <span class="sb-sec-label">TAGS</span>
+                    <div class="sb-tags-wrap" id="detail-tags-wrap"></div>
+                  </div>
+
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <span class="sb-sec-label">NOTE</span>
+                    <textarea class="sb-note-area" id="detail-note-input" placeholder="Add a note…"></textarea>
+                  </div>
+
+                  <div class="sb-detail-actions">
+                    <button class="sb-btn-pri" type="button" style="height:46px" id="detail-copy-btn">
+                      <img src="/assets/icons/copy.svg" width="15" height="15" alt="">
+                      <span>Copy link</span>
+                    </button>
+                    <button class="sb-btn-out" type="button" style="height:46px" id="detail-open-btn">
+                      <img src="/assets/icons/arrow-up-right.svg" width="15" height="15" alt="">
+                      <span>Open</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AddLinkForm Modal Overlay (AddLinkForm.swift) -->
+            <div class="sb-modal-backdrop" id="add-modal-backdrop">
+              <div class="sb-add-modal">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between">
+                  <span style="font-size:28px;font-weight:500;letter-spacing:-.04em;line-height:1.1">Add a link</span>
+                  <button type="button" id="add-modal-close" class="sb-modal-x">
+                    <img src="/assets/icons/x.svg" width="14" height="14" alt="Close">
+                  </button>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <span class="sb-sec-label">URL</span>
+                  <div class="sb-modal-urlbox">
+                    <img class="tok-ic" src="/assets/icons/link.svg" width="15" height="15" alt="">
+                    <input id="add-modal-url" placeholder="Paste or type a web address">
+                  </div>
+                  <div id="add-modal-hint" style="font-size:12px;color:var(--tok-muted)">Try pasting a link with ?utm_source=... to watch trackers strip automatically.</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:4px">
+                  <button class="sb-btn-out" type="button" style="height:46px" id="add-modal-cancel">Cancel</button>
+                  <button class="sb-btn-pri" type="button" style="height:46px" id="add-modal-save">
+                    <img src="/assets/brand/pin-mark-ink.svg" width="15" height="15" alt="">
+                    <span>Stash it</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Toast -->
+            <div class="sb-toast" id="canvas-toast">
+              <img src="/assets/brand/pin-mark-white.svg" width="14" height="14" alt="">
+              <span id="canvas-toast-text">Copied clean URL</span>
+            </div>
+          </div>
+          </div>
+          </div>
+
+          <!-- Horizontal Download CTA Row Directly Underneath the Stashbar App Window -->
+          <div class="mac-under-cta">
+            <div class="mac-under-copy">
+              <strong class="mac-under-title">Want to stash links on your own Mac?</strong>
+              <p class="mac-under-sub">Copy any URL and press ⌥S. Stashbar strips 46 trackers and saves it locally in milliseconds.</p>
+            </div>
+            <div class="mac-under-actions">
+              <a class="btn btn-dark btn-under" data-download href="#">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#ffffff" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
+                Download for Mac
+              </a>
+              <a class="btn btn-closing-light btn-under" href="#features">Explore features</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="pill">For macOS 13 and later · Free</span>
-        <h1 class="h-display">Every link you copy, <span class="mark">saved.</span></h1>
-        <p class="lead">A quiet menu-bar app for macOS. Press ⌥S after you copy, and the link is stashed, cleaned and searchable.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" data-download href="#">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#0c0a08" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
-            Download for Mac
-          </a>
-          <a class="btn btn-outline" href="#how">How it works</a>
-        </div>
-        <div class="hint"><span class="dot"></span>Try it live: copy any link and paste it into the menu bar on the right.</div>
+    <!-- Bento Section: 2 Rows × 3 Cards Each (Tactile Floating Micro-UI in Stashbar Style) -->
+    <section class="section" id="features">
+      <div class="section-head">
+        <span class="eyebrow">Features</span>
+        <h2 class="h2" data-scroll-title>Stash, clean, and search every link that matters.</h2>
+        <p class="body-muted">Built natively for macOS so saving a link feels effortless, and finding it again takes a second.</p>
       </div>
 
-      <div class="demo" id="demo" aria-label="Interactive Stashbar demo">
-        <div class="menubar">
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12h18M4.21 7.5l15.58 9M7.5 4.21l9 15.58M12 3v18M16.5 4.21l-9 15.58M19.79 7.5L4.21 16.5" stroke="#0c0a08" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-          <div class="pin" title="Stashbar"><img src="/assets/brand/pin-mark-white.svg" width="14" height="14" alt="Stashbar"></div>
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="#0c0a08" stroke-width="1.7"/><path d="M10.2 8.8v6.4l5-3.2z" fill="#0c0a08" stroke="#0c0a08" stroke-linejoin="round"/></svg></div>
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c.6 5.2 4.8 9.4 10 10c-5.2.6-9.4 4.8-10 10c-.6-5.2-4.8-9.4-10-10c5.2-.6 9.4-4.8 10-10z" fill="#0c0a08"/></svg></div>
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.5 7.5l9 9l-4.5 4v-17l4.5 4l-9 9" stroke="#0c0a08" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18v-6a8 8 0 0 1 16 0v6" stroke="#0c0a08" stroke-width="2" stroke-linecap="round"/><rect x="4" y="13.5" width="4" height="7" rx="2" stroke="#0c0a08" stroke-width="2"/><rect x="16" y="13.5" width="4" height="7" rx="2" stroke="#0c0a08" stroke-width="2"/></svg></div>
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path fill="#0c0a08" stroke="#0c0a08" stroke-linejoin="round" d="M12 19.5L9.45 16.95A3.6 3.6 0 0 1 14.55 16.95ZM5.78 13.28A8.8 8.8 0 0 1 18.22 13.28L15.96 15.54A5.6 5.6 0 0 0 8.04 15.54ZM2.1 9.6A14 14 0 0 1 21.9 9.6L19.64 11.86A10.8 10.8 0 0 0 4.36 11.86Z"/></svg></div>
-          <div class="ic opt"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6" stroke="#0c0a08" stroke-width="2.1"/><path d="M15 15l4.5 4.5" stroke="#0c0a08" stroke-width="2.1" stroke-linecap="round"/></svg></div>
-          <div class="ic"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="7.5" rx="3.75" stroke="#0c0a08" stroke-width="1.7"/><circle cx="7.4" cy="7.25" r="2.1" fill="#0c0a08"/><rect x="2.65" y="12.15" width="18.7" height="9.2" rx="4.6" fill="#0c0a08"/><circle cx="16.6" cy="16.75" r="2.3" fill="#fff"/></svg></div>
-          <span class="clock"></span>
+      <div class="bento">
+        <!-- Row 1, Card 1: Quick Capture -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="b-key"><img src="/assets/icons/option.svg" width="22" height="22" alt="Option"></span>
+              <span class="b-key"><img src="/assets/icons/arrow-up.svg" width="22" height="22" alt="Shift"></span>
+              <span class="b-key b-key-tap" style="background:var(--accent);color:var(--ink)">S</span>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>Quick Capture</h3>
+            <p>Press ⌥S to open the menu-bar popover with your copied link, or ⌥⇧S to stash it silently.</p>
+          </div>
         </div>
-        <div class="pop">
-          <div id="demo-top"></div>
-          <label class="search">
-            <img src="/assets/icons/search.svg" width="15" height="15" alt="" style="opacity:.55">
-            <input id="demo-search" placeholder="Search links" aria-label="Search links">
-          </label>
-          <div id="demo-list"></div>
+
+        <!-- Row 1, Card 2: Clean Before Saving -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div class="b-stack-wrap">
+              <div class="b-stack-back"></div>
+              <div class="b-stack-front">
+                <div style="display:flex;align-items:center;gap:7px">
+                  <span style="width:18px;height:18px;border-radius:5px;background:var(--accent);display:grid;place-items:center">
+                    <img src="/assets/brand/pin-mark-ink.svg" width="10" height="10" alt="">
+                  </span>
+                  <span style="font-size:10.5px;font-weight:500;color:var(--muted)">nytimes.com</span>
+                  <span style="margin-left:auto;height:20px;padding:0 7px;border-radius:999px;background:var(--beige);font-size:9.5px;font-weight:500;display:inline-flex;align-items:center;gap:4px">
+                    <img src="/assets/icons/shield-check.svg" width="10" height="10" alt=""> 3 off
+                  </span>
+                </div>
+                <div style="margin-top:8px;font-size:12px;font-weight:500;color:var(--ink);line-height:1.25">
+                  Menu-bar apps are back in 2026
+                </div>
+                <div style="margin-top:7px;display:flex;flex-direction:column;gap:4px">
+                  <span style="display:block;height:5px;width:88%;border-radius:999px;background:rgba(12,10,8,.09)"></span>
+                  <span style="display:block;height:5px;width:62%;border-radius:999px;background:rgba(12,10,8,.07)"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>Clean Before Saving</h3>
+            <p>46 tracking parameters like utm_source, fbclid, and gclid are stripped automatically.</p>
+          </div>
+        </div>
+
+        <!-- Row 1, Card 3: Views & Tags -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;max-width:250px">
+              <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px">
+                <span class="b-pill">
+                  <span style="width:14px;height:14px;border-radius:4px;background:var(--accent);display:grid;place-items:center"><img src="/assets/icons/pin.svg" style="width:9px;height:9px" alt=""></span>
+                  Pinned
+                </span>
+                <span class="b-pill">
+                  <img src="/assets/icons/circle-dashed.svg" alt="" style="opacity:.65">
+                  Unopened
+                </span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:7px">
+                <span class="b-pill b-pill-w1"><span style="color:var(--muted-dark)">#</span> design</span>
+                <span class="b-pill b-pill-w2"><span style="color:var(--muted-dark)">#</span> swift</span>
+                <span class="b-pill b-pill-w3"><span style="color:var(--muted-dark)">#</span> reading</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>Views &amp; Tags</h3>
+            <p>Organize links by project or topic with #tags, Pinned favourites, Unopened, and Archive.</p>
+          </div>
+        </div>
+
+        <!-- Row 2, Card 4: Visual Link Canvas -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div class="b-collage">
+              <div class="b-collage-tall">
+                <div style="display:flex;justify-content:flex-end">
+                  <span style="width:20px;height:20px;border-radius:6px;background:var(--accent);display:grid;place-items:center">
+                    <img src="/assets/icons/pin.svg" width="10" height="10" alt="">
+                  </span>
+                </div>
+                <div style="display:grid;place-items:center;margin:auto 0">
+                  <img src="/assets/icons/figma.svg" width="22" height="22" alt="" style="filter:invert(1);opacity:.9">
+                </div>
+                <div style="padding:5px 7px;border-radius:7px;background:var(--graphite);color:#fff">
+                  <div style="font-size:10px;font-weight:500;line-height:1.2">Design Tokens</div>
+                  <div style="font-size:8.5px;color:var(--muted-dark)">figma.com</div>
+                </div>
+              </div>
+              <div class="b-surface" style="padding:9px;display:flex;flex-direction:column;justify-content:center;gap:5px">
+                <span style="display:block;height:5px;width:48%;border-radius:999px;background:rgba(12,10,8,.25)"></span>
+                <span style="display:block;height:5px;width:90%;border-radius:999px;background:rgba(12,10,8,.09)"></span>
+                <span style="display:block;height:5px;width:72%;border-radius:999px;background:rgba(12,10,8,.09)"></span>
+              </div>
+              <div class="b-surface" style="background:var(--charcoal);display:grid;place-items:center;position:relative;overflow:hidden">
+                <span class="b-play-pulse" style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center">
+                  <img src="/assets/icons/play.svg" width="11" height="11" alt="" style="filter:invert(1)">
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>Visual Link Canvas</h3>
+            <p>Open the full window with ⌘E to browse saved articles, repos, and videos as visual cards.</p>
+          </div>
+        </div>
+
+        <!-- Row 2, Card 5: From Any App -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="b-app-tile b-app-t1">
+                <img src="/assets/icons/apple.svg" alt="">
+                <span>Safari</span>
+              </div>
+              <div class="b-app-tile b-app-t2">
+                <img src="/assets/icons/chrome.svg" alt="">
+                <span>Chrome</span>
+              </div>
+              <div class="b-app-tile b-app-t3">
+                <img src="/assets/icons/globe.svg" alt="">
+                <span>Any App</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>From Any App</h3>
+            <p>Works across Safari, Chrome, Arc, Slack, and X without browser extensions, plus HTML import.</p>
+          </div>
+        </div>
+
+        <!-- Row 2, Card 6: Search Your Saved Links -->
+        <div class="bento-card" data-reveal>
+          <div class="bento-stage">
+            <div class="b-surface" style="width:236px;padding:7px">
+              <div style="display:flex;align-items:center;gap:8px;padding:6px 8px">
+                <img src="/assets/icons/search.svg" width="14" height="14" alt="" style="opacity:.5">
+                <span style="flex:1;font-size:12px;font-weight:500;color:var(--ink)">Typography notes<i class="b-caret" aria-hidden="true"></i></span>
+                <span style="font-size:10.5px;color:var(--muted)">⌘K</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:8px;background:var(--beige)">
+                <img src="/assets/brand/pin-mark-ink.svg" width="11" height="11" alt="" style="opacity:.65">
+                <span style="font-size:11px;font-weight:500;color:var(--graphite)">24 links</span>
+                <span style="color:var(--sand)">·</span>
+                <span style="font-size:10.5px;color:var(--muted)">titles, #tags &amp; notes</span>
+              </div>
+            </div>
+          </div>
+          <div class="bento-copy">
+            <h3>Search Your Stash</h3>
+            <p>Find any saved link by title, domain, #tag, or personal note right from your Mac, completely offline.</p>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Interactive 4-Step Privacy & Link-Cleaning Workflow Showcase -->
+    <section class="section wf-section" id="privacy-workflow">
+      <div class="section-head">
+        <span class="eyebrow">Privacy &amp; ownership</span>
+        <h2 class="h2" data-scroll-title>Clean before saving.<br>Private by default.</h2>
+        <p class="body-muted">Every link stays on your Mac until you say otherwise. Stashbar strips the tracking noise<br class="hide-narrow"> and you keep full control.</p>
+      </div>
+
+      <div class="wf-grid" id="wfShowcase">
+        <!-- Left Column: 4 Numbered Auto-Advancing Accordion Steps -->
+        <div class="wf-list" role="tablist" aria-label="Privacy and link cleaning workflow" data-reveal>
+          <div class="wf-item is-active" data-wf-step="0" data-wf-pill="46 Trackers Stripped">
+            <div class="wf-line" aria-hidden="true"><span class="wf-line-fill"></span></div>
+            <button class="wf-head" type="button" role="tab" aria-selected="true" aria-controls="wf-panel-0" id="wf-tab-0">
+              <span class="wf-num">01</span>
+              <span class="wf-title">46 trackers stripped before a link is saved</span>
+            </button>
+            <div class="wf-body">
+              <div class="wf-body-inner">
+                <p class="wf-desc">Noisy marketing parameters are scrubbed automatically the moment you stash.</p>
+                <ul class="wf-checks">
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>utm_source, fbclid, gclid, si &amp; 42 more removed</span>
+                  </li>
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Clean URL copied back out every time</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="wf-item" data-wf-step="1" data-wf-pill="100% On-Device Check">
+            <div class="wf-line" aria-hidden="true"><span class="wf-line-fill"></span></div>
+            <button class="wf-head" type="button" role="tab" aria-selected="false" aria-controls="wf-panel-1" id="wf-tab-1">
+              <span class="wf-num">02</span>
+              <span class="wf-title">Your clipboard stays on this Mac, always</span>
+            </button>
+            <div class="wf-body">
+              <div class="wf-body-inner">
+                <p class="wf-desc">Clipboard checks happen strictly in local memory and never touch a server.</p>
+                <ul class="wf-checks">
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Concealed password-manager items ignored</span>
+                  </li>
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Zero analytics, telemetry, or usage tracking</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="wf-item" data-wf-step="2" data-wf-pill="Offline Search Ready">
+            <div class="wf-line" aria-hidden="true"><span class="wf-line-fill"></span></div>
+            <button class="wf-head" type="button" role="tab" aria-selected="false" aria-controls="wf-panel-2" id="wf-tab-2">
+              <span class="wf-num">03</span>
+              <span class="wf-title">Short links expanded &amp; indexed for recall</span>
+            </button>
+            <div class="wf-body">
+              <div class="wf-body-inner">
+                <p class="wf-desc">Wrapped URLs resolve to their real destination with clean titles and #tags.</p>
+                <ul class="wf-checks">
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>t.co, bit.ly &amp; lnkd.in expanded natively</span>
+                  </li>
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Instant offline search across titles, #tags &amp; notes</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="wf-item" data-wf-step="3" data-wf-pill="Local-First Ownership">
+            <div class="wf-line" aria-hidden="true"><span class="wf-line-fill"></span></div>
+            <button class="wf-head" type="button" role="tab" aria-selected="false" aria-controls="wf-panel-3" id="wf-tab-3">
+              <span class="wf-num">04</span>
+              <span class="wf-title">Guest mode first, cloud sync when you’re ready</span>
+            </button>
+            <div class="wf-body">
+              <div class="wf-body-inner">
+                <p class="wf-desc">Use Stashbar forever without an account, or sign in later to back up across Macs.</p>
+                <ul class="wf-checks">
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>One-click .json and .html portable backups</span>
+                  </li>
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.75" stroke="currentColor" stroke-width="1.25"/><path d="M5.25 8.15l1.85 1.85 3.65-3.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Opt-in Google or Apple sync across your Macs</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Stashbar Fluted Cream & Lime Backdrop + Bespoke Animated Stashbar Micro-UIs -->
+        <div class="wf-stage" data-reveal>
+          <img class="wf-stage-bg" src="/assets/showcase-desk.webp?v=12" alt="" loading="lazy" decoding="async">
+
+          <div class="wf-top-pill" aria-live="polite">
+            <img src="/assets/brand/pin-mark-ink.svg" width="12" height="12" alt="">
+            <span id="wfTopPillText">46 Trackers Stripped</span>
+          </div>
+
+          <div class="wf-card">
+            <!-- Panel 01: Bespoke Stashbar Live Link Scrubber UI -->
+            <div class="wf-panel is-active" id="wf-panel-0" data-wf-panel="0" role="tabpanel" aria-labelledby="wf-tab-0">
+              <div class="wui-head">
+                <div class="wui-head-titles">
+                  <span class="wui-kicker">LinkCleaner · Automatic</span>
+                  <h3 class="wui-heading">Scrubbed before anything is saved</h3>
+                </div>
+                <span class="wui-accent-pill wui-anim-shield">
+                  <img src="/assets/icons/shield-check.svg" width="12" height="12" alt="">
+                  <span>3 trackers off</span>
+                </span>
+              </div>
+
+              <div class="wui-raw-box">
+                <div class="wui-raw-head">
+                  <span style="display:inline-flex;align-items:center;gap:6px">
+                    <img src="/assets/icons/figma.svg" width="12" height="12" alt="" style="filter:invert(1);opacity:.8">
+                    ON YOUR CLIPBOARD
+                  </span>
+                  <span class="wui-raw-tag">46 rules active</span>
+                </div>
+                <div class="wui-raw-url">
+                  <span>https://figma.com/blog/variables</span><span class="wui-trk t1">?utm_source=x</span><span class="wui-trk t2">&amp;fbclid=IwAR9</span><span class="wui-trk t3">&amp;mc_eid=82a</span>
+                </div>
+                <div class="wui-trk-chips">
+                  <span class="wui-trk-chip c1">utm_source</span>
+                  <span class="wui-trk-chip c2">fbclid</span>
+                  <span class="wui-trk-chip c3">mc_eid</span>
+                </div>
+              </div>
+
+              <div class="wui-scrub-arrow" aria-hidden="true">
+                <span class="wui-scrub-line"></span>
+                <span class="wui-scrub-pill">Cleaned on this Mac</span>
+                <span class="wui-scrub-line"></span>
+              </div>
+
+              <div class="wui-clean-box">
+                <span class="wui-clean-check"><img src="/assets/icons/check.svg" width="14" height="14" alt=""></span>
+                <div class="wui-clean-text">
+                  <span class="wui-clean-lbl">SAVED CLEAN URL</span>
+                  <span class="wui-clean-val">https://figma.com/blog/variables</span>
+                </div>
+                <span class="wui-kbd-chip">⌘C clean</span>
+              </div>
+            </div>
+
+            <!-- Panel 02: Bespoke On-Device Clipboard Sandbox UI -->
+            <div class="wf-panel" id="wf-panel-1" data-wf-panel="1" role="tabpanel" aria-labelledby="wf-tab-1">
+              <div class="wui-head">
+                <div class="wui-head-titles">
+                  <span class="wui-kicker">Local Clipboard Guard</span>
+                  <h3 class="wui-heading">Checked in RAM, never uploaded</h3>
+                </div>
+              </div>
+
+              <div class="wui-sandbox-win">
+                <div class="wui-sandbox-bar">
+                  <div class="wui-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+                  <span>NSPasteboard · This Mac Only</span>
+                  <span class="wui-live-pill"><i></i>On-device</span>
+                </div>
+
+                <div class="wui-clip-items">
+                  <div class="wui-clip-row is-valid">
+                    <span class="wui-clip-ico"><img src="/assets/icons/link.svg" width="14" height="14" alt=""></span>
+                    <div class="wui-clip-meta">
+                      <b>developer.apple.com/design/hig</b>
+                      <span>Plain HTTP(S) link · Ready to stash</span>
+                    </div>
+                    <span class="wui-allow-tag">Offer ⌥S</span>
+                  </div>
+
+                  <div class="wui-clip-row is-secret">
+                    <span class="wui-clip-ico is-lock"><img src="/assets/icons/lock.svg" width="14" height="14" alt=""></span>
+                    <div class="wui-clip-meta">
+                      <b>1Password · <span class="wui-mask-dots">••••••••••••</span></b>
+                      <span>Concealed credential · Untouched</span>
+                    </div>
+                    <span class="wui-skip-tag">Ignored</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wui-airgap">
+                <span class="wui-airgap-badge">
+                  <img src="/assets/icons/wifi-off.svg" width="14" height="14" alt="">
+                  <span>0 bytes uploaded · Zero analytics or telemetry</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Panel 03: Bespoke Short-Link Unfurler + Visual Tag Card UI -->
+            <div class="wf-panel" id="wf-panel-2" data-wf-panel="2" role="tabpanel" aria-labelledby="wf-tab-2">
+              <div class="wui-head">
+                <div class="wui-head-titles">
+                  <span class="wui-kicker">Instant Offline Recall</span>
+                  <h3 class="wui-heading">Unfurled, tagged &amp; searchable</h3>
+                </div>
+              </div>
+
+              <div class="wui-unfurl-bar">
+                <span class="wui-short-url">t.co/9xK2p</span>
+                <span class="wui-unfurl-arrow"><img src="/assets/icons/arrow-right.svg" width="13" height="13" alt=""></span>
+                <span class="wui-full-url">
+                  <img src="/assets/icons/figma.svg" width="12" height="12" alt="">
+                  <span>figma.com/blog/variables-and-modes</span>
+                </span>
+              </div>
+
+              <div class="wui-recall-card">
+                <div class="wui-recall-thumb">
+                  <img class="wui-thumb-logo" src="/assets/icons/figma.svg" width="28" height="28" alt="">
+                  <span class="wui-pin-corner"><img src="/assets/icons/pin.svg" width="11" height="11" alt=""></span>
+                </div>
+                <div class="wui-recall-body">
+                  <div class="wui-recall-title">Variables &amp; modes: a practical guide</div>
+                  <div class="wui-recall-note">“Check token naming for light &amp; dark modes”</div>
+                  <div class="wui-tag-row">
+                    <span class="wui-tag tg1">#design</span>
+                    <span class="wui-tag tg2">#tokens</span>
+                    <span class="wui-tag tg3">#reading</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wui-search-mini">
+                <img src="/assets/icons/search.svg" width="14" height="14" alt="">
+                <span class="wui-search-typed">tokens</span>
+                <span class="wui-search-hit">1 instant offline match</span>
+                <span class="wui-kbd-chip">⌘K</span>
+              </div>
+            </div>
+
+            <!-- Panel 04: Bespoke Guest Storage + Opt-In Multi-Mac Sync Switchboard UI -->
+            <div class="wf-panel" id="wf-panel-3" data-wf-panel="3" role="tabpanel" aria-labelledby="wf-tab-3">
+              <div class="wui-head">
+                <div class="wui-head-titles">
+                  <span class="wui-kicker">Data Ownership &amp; Sync</span>
+                  <h3 class="wui-heading">Local SQLite first, sync optional</h3>
+                </div>
+              </div>
+
+              <div class="wui-local-vault">
+                <div class="wui-vault-left">
+                  <span class="wui-vault-ico"><img src="/assets/icons/hard-drive.svg" width="17" height="17" alt=""></span>
+                  <div>
+                    <div class="wui-vault-title">Guest Vault · This Mac</div>
+                    <div class="wui-vault-sub">Local SQLite · No sign-up required</div>
+                  </div>
+                </div>
+                <div class="wui-export-files">
+                  <span class="wui-file-chip f1">
+                    <img src="/assets/icons/download.svg" width="12" height="12" alt="">
+                    <span>.json</span>
+                  </span>
+                  <span class="wui-file-chip f2">
+                    <img src="/assets/icons/file-text.svg" width="12" height="12" alt="">
+                    <span>.html</span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="wui-sync-bridge">
+                <div class="wui-mac-node n-left">
+                  <span class="wui-mac-ico"><img src="/assets/icons/laptop.svg" width="16" height="16" alt=""></span>
+                  <div>
+                    <b>MacBook Pro</b>
+                    <span>On-device</span>
+                  </div>
+                </div>
+
+                <div class="wui-sync-pill">
+                  <img class="wui-sync-spin" src="/assets/icons/refresh-cw.svg" width="12" height="12" alt="">
+                  <span>Opt-in</span>
+                </div>
+
+                <div class="wui-mac-node n-right">
+                  <span class="wui-mac-ico"><img src="/assets/icons/monitor.svg" width="16" height="16" alt=""></span>
+                  <div>
+                    <b>Mac Studio</b>
+                    <span>Google · Apple</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wui-owner-foot">
+                <span class="wui-owner-dot"></span>
+                <span>Stay offline forever, or sign in anytime with one-click wipe</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2-Row Link Sources & Formats Marquee Section -->
+    <section class="formats-section" aria-label="Supported link formats and sources">
+      <span class="eyebrow" style="margin-bottom:14px">Supported links</span>
+      <p class="formats-lead" data-scroll-title>Articles, GitHub repos, Figma files, videos, tweets, papers, and more. Every link recognized and cleaned natively.</p>
+      <div class="formats-mask">
+        <!-- Row 1 (moves left) -->
+        <div class="formats-track">
+          <div class="formats-group">
+            <div class="format-tile"><img src="/assets/icons/image.svg" alt=""><span>Images</span></div>
+            <div class="format-tile"><img src="/assets/icons/play.svg" alt=""><span>Video</span></div>
+            <div class="format-tile"><img src="/assets/icons/twitter.svg" alt=""><span>Tweets</span></div>
+            <div class="format-tile"><img src="/assets/icons/github.svg" alt=""><span>GitHub</span></div>
+            <div class="format-tile"><img src="/assets/icons/book-open.svg" alt=""><span>Articles</span></div>
+            <div class="format-tile"><img src="/assets/icons/figma.svg" alt=""><span>Figma</span></div>
+            <div class="format-tile"><img src="/assets/icons/apple.svg" alt=""><span>Apple Docs</span></div>
+          </div>
+          <div class="formats-group" aria-hidden="true">
+            <div class="format-tile"><img src="/assets/icons/image.svg" alt=""><span>Images</span></div>
+            <div class="format-tile"><img src="/assets/icons/play.svg" alt=""><span>Video</span></div>
+            <div class="format-tile"><img src="/assets/icons/twitter.svg" alt=""><span>Tweets</span></div>
+            <div class="format-tile"><img src="/assets/icons/github.svg" alt=""><span>GitHub</span></div>
+            <div class="format-tile"><img src="/assets/icons/book-open.svg" alt=""><span>Articles</span></div>
+            <div class="format-tile"><img src="/assets/icons/figma.svg" alt=""><span>Figma</span></div>
+            <div class="format-tile"><img src="/assets/icons/apple.svg" alt=""><span>Apple Docs</span></div>
+          </div>
+        </div>
+
+        <!-- Row 2 (moves right) -->
+        <div class="formats-track is-reverse">
+          <div class="formats-group">
+            <div class="format-tile"><img src="/assets/icons/youtube.svg" alt=""><span>YouTube</span></div>
+            <div class="format-tile"><img src="/assets/icons/notebook.svg" alt=""><span>Notes</span></div>
+            <div class="format-tile"><img src="/assets/icons/file-text.svg" alt=""><span>PDFs &amp; Papers</span></div>
+            <div class="format-tile"><img src="/assets/icons/volume-2.svg" alt=""><span>Audio</span></div>
+            <div class="format-tile"><img src="/assets/icons/message-circle.svg" alt=""><span>Threads</span></div>
+            <div class="format-tile"><img src="/assets/icons/link.svg" alt=""><span>Short Links</span></div>
+            <div class="format-tile"><img src="/assets/icons/globe.svg" alt=""><span>Any Website</span></div>
+          </div>
+          <div class="formats-group" aria-hidden="true">
+            <div class="format-tile"><img src="/assets/icons/youtube.svg" alt=""><span>YouTube</span></div>
+            <div class="format-tile"><img src="/assets/icons/notebook.svg" alt=""><span>Notes</span></div>
+            <div class="format-tile"><img src="/assets/icons/file-text.svg" alt=""><span>PDFs &amp; Papers</span></div>
+            <div class="format-tile"><img src="/assets/icons/volume-2.svg" alt=""><span>Audio</span></div>
+            <div class="format-tile"><img src="/assets/icons/message-circle.svg" alt=""><span>Threads</span></div>
+            <div class="format-tile"><img src="/assets/icons/link.svg" alt=""><span>Short Links</span></div>
+            <div class="format-tile"><img src="/assets/icons/globe.svg" alt=""><span>Any Website</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
     <section class="section" id="how">
-      <div style="display:flex;flex-direction:column;gap:16px;max-width:620px">
+      <div class="section-head">
         <span class="eyebrow">How it works</span>
-        <h2 class="h2">Three keys. No lost links.</h2>
+        <h2 class="h2" data-scroll-title>Three keys. No lost links.</h2>
+        <p class="body-muted">Designed to stay out of your way until the exact second you copy a link worth keeping.</p>
       </div>
-      <div class="steps">
-        <div class="step"><div class="step-top"><span class="eyebrow">01</span><span class="key">⌘C</span></div><h3 class="h3">Copy a link</h3><p class="body-muted">From Safari, Slack, X or anywhere else. It never leaves your Mac.</p></div>
-        <div class="step"><div class="step-top"><span class="eyebrow">02</span><span class="key">⌥S</span></div><h3 class="h3">Stash it</h3><p class="body-muted">The popover opens with the link ready. Press Return and trackers are stripped.</p></div>
-        <div class="step"><div class="step-top"><span class="eyebrow">03</span><span class="key">⌘E</span></div><h3 class="h3">Find it later</h3><p class="body-muted">Search from the menu bar, or open the canvas to browse every link as a card.</p></div>
+      <div class="steps-cards">
+        <div class="step-card step-seq-1" data-reveal>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="eyebrow">Step 01</span>
+            <span style="font-size:12px;color:var(--muted)">Anywhere on Mac</span>
+          </div>
+          <div class="step-card-keys">
+            <span class="step-kcap"><img src="/assets/icons/command.svg" width="20" height="20" alt="Command"></span>
+            <span class="step-kcap">C</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <h3 class="h3" style="font-size:19px">Copy a link</h3>
+            <p class="body-muted" style="font-size:14px">From Safari, Chrome, Arc, Slack, or X. Checked locally so nothing leaves your Mac.</p>
+          </div>
+        </div>
+
+        <div class="step-card step-seq-2" data-reveal>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="eyebrow">Step 02</span>
+            <span style="font-size:12px;color:var(--muted)">Global shortcut</span>
+          </div>
+          <div class="step-card-keys">
+            <span class="step-kcap"><img src="/assets/icons/option.svg" width="20" height="20" alt="Option"></span>
+            <span class="step-kcap accent">S</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <h3 class="h3" style="font-size:19px">Stash it</h3>
+            <p class="body-muted" style="font-size:14px">The menu-bar popover opens with your link ready. Press Return and trackers are stripped.</p>
+          </div>
+        </div>
+
+        <div class="step-card step-seq-3" data-reveal>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="eyebrow">Step 03</span>
+            <span style="font-size:12px;color:var(--muted)">Instant recall</span>
+          </div>
+          <div class="step-card-keys">
+            <span class="step-kcap"><img src="/assets/icons/command.svg" width="20" height="20" alt="Command"></span>
+            <span class="step-kcap">E</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <h3 class="h3" style="font-size:19px">Find it later</h3>
+            <p class="body-muted" style="font-size:14px">Search right from the menu bar, or open the visual canvas to browse every link as a card.</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section cards">
-      <div class="card card-dark">
-        <img src="/assets/icons/shield-check.svg" width="28" height="28" alt="" style="filter:invert(1)">
-        <div><h3>Private by default.</h3><p class="body-muted">Your clipboard is read on your Mac, only to spot links. 46 kinds of tracking parameters are removed before anything is saved.</p></div>
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="h2" data-scroll-title>Questions &amp; answers</h2>
       </div>
-      <div class="card card-beige">
-        <img src="/assets/icons/user-round.svg" width="28" height="28" alt="">
-        <div><h3>No account needed.</h3><p class="body-muted">Start as a guest. Sign in with Google later and every link syncs across your Macs.</p></div>
+      <div class="faq-wrap" data-reveal>
+        <div class="faq-list">
+          <details class="faq-acc" open>
+            <summary>Is Stashbar really free?<span class="faq-plus"><img src="/assets/icons/plus.svg" width="13" height="13" alt=""></span></summary>
+            <p>Yes, completely free. Download the DMG, drag Stashbar into Applications, and start stashing links immediately.</p>
+          </details>
+          <details class="faq-acc">
+            <summary>Do you read or upload my clipboard?<span class="faq-plus"><img src="/assets/icons/plus.svg" width="13" height="13" alt=""></span></summary>
+            <p>Stashbar only checks your clipboard locally on your Mac to spot web addresses, and ignores concealed items from password managers. Nothing is uploaded unless you stash a link while signed in.</p>
+          </details>
+          <details class="faq-acc">
+            <summary>What happens if I delete the app?<span class="faq-plus"><img src="/assets/icons/plus.svg" width="13" height="13" alt=""></span></summary>
+            <p>Guest links live only on your Mac (you can export a <code>.json</code> or <code>.html</code> backup anytime). If you sign in with Google or Apple, your links sync back automatically on any Mac.</p>
+          </details>
+          <details class="faq-acc">
+            <summary>Which Macs and macOS versions are supported?<span class="faq-plus"><img src="/assets/icons/plus.svg" width="13" height="13" alt=""></span></summary>
+            <p>macOS 13 Ventura or later, running natively as a universal binary on both Apple silicon and Intel Macs.</p>
+          </details>
+          <details class="faq-acc">
+            <summary>How do I quit Stashbar completely?<span class="faq-plus"><img src="/assets/icons/plus.svg" width="13" height="13" alt=""></span></summary>
+            <p>Right-click the pin icon in your menu bar and choose <b>Quit Stashbar</b>. It exits cleanly with no hidden helpers or background agents left running.</p>
+          </details>
+        </div>
       </div>
-    </section>
-
-    <section class="section" id="install">
-      <div style="display:flex;flex-direction:column;gap:16px;max-width:720px">
-        <span class="eyebrow">Install</span>
-        <h2 class="h2">Up and running in a minute.</h2>
-        <p class="body-muted">Stashbar is free and independent, so it isn’t sold through the App Store. macOS asks you to confirm it once on first launch.</p>
-      </div>
-      <div class="install">
-        <div class="install-step"><span class="num">1</span><b>Download and drag</b><span class="body-muted">Open <code>Stashbar.dmg</code> and drag Stashbar into Applications.</span></div>
-        <div class="install-step"><span class="num">2</span><b>Open it once</b><span class="body-muted">Open Stashbar from Applications. If macOS says it can’t verify the developer, click <b>Done</b>.</span></div>
-        <div class="install-step"><span class="num">3</span><b>Click “Open Anyway”</b><span class="body-muted">System Settings → Privacy &amp; Security → scroll down → <b>Open Anyway</b>. You only do this once.</span></div>
-      </div>
-    </section>
-
-    <section class="section faq" id="faq">
-      <h2 class="h2">Questions</h2>
-      <div class="faq-list">
-        <div class="faq-item"><div class="faq-q">Is it free?</div><p class="body-muted">Yes. Download, drag to Applications, done.</p></div>
-        <div class="faq-item"><div class="faq-q">Do you read my clipboard?</div><p class="body-muted">Only to spot links, and only on your Mac.</p></div>
-        <div class="faq-item"><div class="faq-q">What if I delete the app?</div><p class="body-muted">Guests lose their links. Signed-in users get them all back.</p></div>
-        <div class="faq-item"><div class="faq-q">Which Macs does it support?</div><p class="body-muted">macOS 13 Ventura or later, on Apple silicon and Intel.</p></div>
-        <div class="faq-item"><div class="faq-q">How do I quit it completely?</div><p class="body-muted">Right-click the pin in the menu bar and choose <b>Quit Stashbar</b>. It stops fully — nothing keeps running in the background.</p></div>
-      </div>
-    </section>
-
-    <section class="final">
-      <img src="/assets/brand/app-icon-accent.svg" width="64" height="64" alt="">
-      <h2 class="h-final">Stop losing links.</h2>
-      <a class="btn btn-primary" data-download href="#">Download for Mac</a>
-      <span class="meta" data-version style="color:var(--muted-dark)">macOS 13+ · Apple silicon &amp; Intel</span>
     </section>
   </main>
+</div>
 
-  <footer class="footer">
-    <a class="brand" href="/" style="font-size:15px"><img src="/assets/brand/pin-mark-ink.svg" width="15" height="15" alt="">Stashbar</a>
-    <nav><a href="/privacy">Privacy</a><a href="/help">Help</a><a href="https://github.com/sajidur7/Stashbar/releases">Changelog</a><a href="https://github.com/sajidur7/Stashbar">GitHub</a></nav>
-    <span>© 2026 Stashbar</span>
+<!-- Full-Bleed Unified Closing CTA + Footer over the Stashbar Fluted Cream & Lime BG -->
+<div class="closing-scene">
+  <img class="closing-bg" src="/assets/macos-day.webp?v=18" alt="" loading="lazy" decoding="async">
+  <div class="closing-top-fade" aria-hidden="true"></div>
+
+  <section class="closing-cta" aria-label="Download Stashbar" data-reveal>
+    <h2 class="closing-title" data-scroll-title>Stop losing the links<br>worth keeping.</h2>
+    <p class="closing-sub">Whether it’s an article, a GitHub repo, or a reference thread, Stashbar catches every link from your Mac menu bar, strips the trackers, and keeps it ready whenever you search.</p>
+    <div class="closing-actions">
+      <a class="btn btn-dark" data-download href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#ffffff" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn btn-closing-light" href="/help">Keyboard shortcuts</a>
+    </div>
+    <span class="closing-meta" data-version>Free · macOS 13+ · Apple silicon &amp; Intel</span>
+  </section>
+
+  <footer class="closing-footer">
+    <div class="closing-foot-inner">
+      <div class="closing-foot-main">
+        <div class="closing-brand">
+          <a class="closing-brand-link" href="/">
+            <img src="/assets/brand/pin-mark-ink.svg" width="22" height="22" alt="">
+            <span>Stashbar</span>
+          </a>
+          <p>Every link you copy, saved and cleaned.<br>Local-first on macOS.</p>
+        </div>
+
+        <nav class="closing-cols" aria-label="Footer">
+          <div class="closing-col">
+            <h4>Product</h4>
+            <a data-download href="#">Download for Mac</a>
+            <a href="#demo">Interactive demo</a>
+            <a href="#features">Features</a>
+          </div>
+          <div class="closing-col">
+            <h4>Learn</h4>
+            <a href="#how">How it works</a>
+            <a href="/help">Keyboard shortcuts</a>
+            <a href="#faq">FAQ</a>
+          </div>
+          <div class="closing-col">
+            <h4>Project</h4>
+            <a href="/privacy">Privacy policy</a>
+            <a href="/help">Help &amp; support</a>
+            <a href="mailto:incognitoshimul@gmail.com?subject=Stashbar">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class="closing-bottom-bar">
+      <div class="closing-bottom-inner">
+        <span>© 2026 Stashbar. Built with care for macOS.</span>
+        <div class="closing-bottom-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/help">Help &amp; Support</a>
+        </div>
+      </div>
+    </div>
   </footer>
 </div>
-<script type="module" src="/js/site.js"></script>
+
+<script type="module" src="/js/site.js?v=18"></script>
 </body>
 </html>
