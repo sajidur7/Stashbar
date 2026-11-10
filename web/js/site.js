@@ -1102,6 +1102,23 @@ if (wfShowcase) {
       onScroll();
     };
 
+    // ---- Eased parallax layers ----
+    let plxTarget = 0, plxPos = 0, plxRaf = 0, plxLast = 0;
+    const plxApply = v => {
+      const n = wfItems.length;
+      const f = v - Math.floor(v);
+      pin.style.setProperty('--wf-p', (Math.min(Math.max(v / n, 0), 1)).toFixed(4));
+      pin.style.setProperty('--wf-float', Math.sin(f * Math.PI).toFixed(4)); // 0 → 1 → 0 within each step
+    };
+    const plxStep = now => {
+      const dt = plxLast ? Math.min(now - plxLast, 64) : 16.7;
+      plxLast = now;
+      plxPos += (plxTarget - plxPos) * (1 - Math.exp(-dt * 0.008)); // ~0.35s glide, frame-rate independent
+      if (Math.abs(plxTarget - plxPos) < 0.0005) plxPos = plxTarget;
+      plxApply(plxPos);
+      plxRaf = plxPos === plxTarget ? 0 : requestAnimationFrame(plxStep);
+    };
+
     const onScroll = () => {
       if (!wfScrollMode || ticking) return;
       ticking = true;
@@ -1112,9 +1129,9 @@ if (wfShowcase) {
         const idx = Math.floor(pos);
         if (idx !== wfIdx) setWfStep(idx, true);
         const frac = pos - idx;
-        // Parallax: overall progress and progress within the open step, for the CSS layers.
-        pin.style.setProperty('--wf-p', p.toFixed(4));
-        pin.style.setProperty('--wf-f', frac.toFixed(4));
+        // Parallax target; the layers ease towards it in plxStep (smoother than following each wheel tick).
+        plxTarget = pos;
+        if (!plxRaf) { plxLast = 0; plxRaf = requestAnimationFrame(plxStep); }
         const fill = wfItems[idx]?.querySelector('.wf-line-fill');
         if (fill) fill.style.width = (frac * 100).toFixed(2) + '%';
         if (dots) dots.querySelectorAll('i').forEach((el, i) => {
@@ -1315,7 +1332,8 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
           // The site font has no ৳ glyph, so draw it as an SVG (outline from Noto Sans Bengali, OFL).
           el.innerHTML = '<svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>' + el.dataset.bdt.replace('৳', '');
         } else {
-          el.textContent = el.dataset.usd;
+          // Same separate sign as ৳ so $ isn't squeezed by the tight number tracking.
+          el.innerHTML = '<span class="pr-cur">$</span>' + el.dataset.usd.replace('$', '');
         }
       });
       q.textContent = cur === 'BDT' ? 'Outside Bangladesh?' : 'In Bangladesh?';

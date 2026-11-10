@@ -6,57 +6,46 @@
 <title>Send feedback · Stashbar</title>
 <meta name="description" content="Bug, idea or a thank-you. Every message is read by the people who build Stashbar.">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=39">
+<link rel="stylesheet" href="/css/site.css?v=41">
 <style>
-/* Feedback: split layout. Sticky intro on the left, raised form card on a beige band. */
-.fb2-band{background:linear-gradient(180deg,#fff 0,var(--beige) 220px);padding:72px 48px 96px}
-.fb2{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:start}
-.fb2-intro{position:sticky;top:96px;display:flex;flex-direction:column;gap:20px}
-.fb2-pill{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;background:#fff;border:1px solid var(--line);font-size:12px;letter-spacing:.02em}
-.fb2-pill i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 1px rgba(12,10,8,.12)}
-.fb2-intro h1{margin:0;font-weight:500;font-size:56px;line-height:1.02;letter-spacing:-.045em;text-wrap:balance}
-.fb2-intro p.lead{margin:0;font-size:17px;line-height:1.6;color:var(--muted);max-width:420px}
-.fb2-stat{display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:var(--r-l);background:var(--charcoal);color:#fff;margin-top:12px;max-width:420px}
-.fb2-stat b{font-weight:500;font-size:34px;letter-spacing:-.04em;color:var(--accent);line-height:1}
-.fb2-stat span{font-size:14px;color:var(--muted-dark);line-height:1.45}
-.fb2-promises{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;max-width:420px}
-.fb2-promises li{display:flex;gap:12px;align-items:flex-start;font-size:14px;line-height:1.5;color:var(--graphite)}
-.fb2-promises img{width:18px;height:18px;margin-top:1px;flex:none;opacity:.8}
-.fb2-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:36px;box-shadow:0 40px 80px -40px rgba(12,10,8,.22);display:flex;flex-direction:column;gap:26px}
+.fb{padding:40px 48px 48px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px}
+.fb-form{display:flex;flex-direction:column;gap:22px}
 .fb-field{display:flex;flex-direction:column;gap:10px}
 .fb-label{font-size:12px;color:var(--muted);letter-spacing:.02em}
-.kinds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-.kind{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:14px;border-radius:var(--r-l);border:1px solid var(--line);background:#fff;font:400 14px var(--font);color:var(--ink);cursor:pointer;text-align:left;transition:background-color .15s,border-color .15s,transform .1s}
+.kinds{display:flex;gap:8px;flex-wrap:wrap}
+.kind{height:38px;padding:0 16px;display:flex;align-items:center;border-radius:var(--r-c);border:1px solid var(--line);background:#fff;font:400 13px var(--font);color:var(--ink);cursor:pointer;transition:background-color .15s,border-color .15s}
 .kind:hover{background:var(--beige)}
-.kind:active{transform:scale(.98)}
-.kind .ic{width:34px;height:34px;border-radius:var(--r-c);background:var(--beige);display:grid;place-items:center}
-.kind b{font-weight:500;font-size:14px;display:block}
-.kind small{font-size:12px;color:var(--muted)}
-.kind[aria-pressed="true"],.kind[aria-pressed="true"]:hover{background:var(--charcoal);border-color:var(--charcoal);color:#fff}
-.kind[aria-pressed="true"] b{color:#fff}
-.kind[aria-pressed="true"] .ic{background:var(--accent)}
-.kind[aria-pressed="true"] small{color:var(--muted-dark)}
-.fb2 textarea{min-height:170px;resize:vertical;padding:16px;border-radius:var(--r-l);border:1px solid var(--line);background:var(--beige);font:400 15px/1.55 var(--font);color:var(--ink);outline:none;transition:border-color .15s,background-color .15s}
-.fb2 textarea:focus{border-color:var(--ink);background:#fff}
-.drop{min-height:76px;border-radius:var(--r-l);border:1px dashed var(--sand);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--muted);cursor:pointer;padding:12px;text-align:center;transition:background-color .15s,border-color .15s}
+.kind[aria-pressed="true"]{background:var(--charcoal);border-color:var(--charcoal);color:#fff;font-weight:500}
+.fb textarea{min-height:160px;resize:vertical;padding:16px;border-radius:var(--r-l);border:1px solid var(--ink);font:400 14px/1.55 var(--font);color:var(--ink);outline:none;background:#fff}
+.fb textarea:focus,.fb input[type=email]:focus{box-shadow:0 0 0 3px rgba(228,242,34,.6)}
+.drop{min-height:88px;border-radius:var(--r-l);border:1px dashed var(--muted-dark);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--muted);cursor:pointer;padding:12px;text-align:center;transition:background-color .15s,border-color .15s}
 .drop:hover,.drop.over{background:var(--beige);border-color:var(--ink)}
-.drop img.thumb{max-height:56px;border-radius:var(--r-s);border:1px solid var(--line)}
+.drop img.thumb{max-height:64px;border-radius:var(--r-s);border:1px solid var(--line)}
 .fb-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fb2 input[type=email]{height:48px;padding:0 16px;border-radius:var(--r-c);border:1px solid var(--line);background:var(--beige);font:400 14px var(--font);color:var(--ink);outline:none;transition:border-color .15s,background-color .15s}
-.fb2 input[type=email]:focus{border-color:var(--ink);background:#fff}
-.attach{height:48px;padding:0 14px;border-radius:var(--r-c);border:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;user-select:none;position:relative}
+.fb input[type=email]{height:46px;padding:0 16px;border-radius:var(--r-c);border:1px solid var(--line);font:400 13px var(--font);color:var(--ink);outline:none;background:#fff}
+.attach{height:46px;padding:0 14px;border-radius:var(--r-c);background:var(--beige);display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;user-select:none}
 .attach input{position:absolute;opacity:0;pointer-events:none}
 .check{width:20px;height:20px;border-radius:var(--r-s);border:1px solid var(--ink);display:grid;place-items:center;flex:none;transition:background-color .15s}
 .attach input:checked + .check{background:var(--charcoal);border-color:var(--charcoal)}
 .check svg{width:12px;height:12px;opacity:0}
 .attach input:checked + .check svg{opacity:1}
 .attach input:focus-visible + .check{outline:2px solid var(--ink);outline-offset:2px}
-.fb-send{width:100%;height:54px}
+.fb-send{align-self:flex-start}
 .fb-note{font-size:13px;color:var(--muted);margin:0}
-.sent{display:none;padding:18px 20px;border-radius:var(--r-l);background:var(--beige);gap:6px;flex-direction:column}
+.fb-side{display:flex;flex-direction:column;gap:12px;margin-top:118px}
+.side{padding:22px;border-radius:var(--r-l);display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit}
+.side-dark{background:var(--charcoal);color:#fff}
+.side-dark b{font-weight:500;font-size:36px;letter-spacing:-.04em;color:var(--accent);line-height:1}
+.side-dark span{font-size:13px;color:var(--muted-dark)}
+.side-beige{background:var(--beige);transition:background-color .15s}
+.side-beige:hover{background:var(--line)}
+.side-line{border:1px solid var(--line)}
+.side b.t{font-weight:400;font-size:14px}
+.side span.m{font-size:13px;color:var(--muted)}
+.sent{display:none;padding:22px;border-radius:var(--r-l);background:var(--beige);gap:8px;flex-direction:column}
 .sent.on{display:flex}
-@media (max-width:1000px){.fb2{grid-template-columns:1fr;gap:40px}.fb2-intro{position:static}.kinds{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:720px){.fb2-band{padding:40px 16px 64px}.fb2-intro h1{font-size:42px}.fb2-card{padding:22px;border-radius:18px}.fb-row{grid-template-columns:1fr}}
+@media (max-width:900px){.fb{grid-template-columns:1fr}.fb-side{margin-top:0!important}}
+@media (max-width:720px){.fb{padding:32px 16px}.fb-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -78,44 +67,28 @@
     </div>
   </header>
 </div>
-  <main class="fb2-band">
-    <section class="fb2">
-      <div class="fb2-intro">
-        <span class="fb2-pill"><i></i>SEND FEEDBACK</span>
-        <h1>Tell us what to fix next.</h1>
-        <p class="lead">Bug, idea or a thank-you. Every message is read by the people who build Stashbar.</p>
-        <div class="fb2-stat"><b>&lt; 24h</b><span>Typical reply time on weekdays.<br>Leave an email if you’d like one.</span></div>
-        <ul class="fb2-promises">
-          <li><img src="/assets/icons/lock.svg" alt=""><span>We never include your saved links or clipboard, unless you paste them in yourself.</span></li>
-          <li><img src="/assets/icons/shield-check.svg" alt=""><span>Your email is only used to reply to this message.</span></li>
-        </ul>
-      </div>
+<div class="wrap">
+  <main>
+    <section class="page-hero">
+      <span class="label">SEND FEEDBACK</span>
+      <h1>Tell us what to fix next.</h1>
+      <p>Bug, idea or a thank-you. Every message is read by the people who build Stashbar.</p>
+    </section>
 
-      <form class="fb2-card" id="fb" novalidate>
+    <section class="fb">
+      <form class="fb-form" id="fb" novalidate>
         <div class="fb-field">
           <span class="fb-label" id="kind-label">WHAT KIND?</span>
           <div class="kinds" role="group" aria-labelledby="kind-label">
-            <button type="button" class="kind" aria-pressed="true" data-kind="Bug">
-              <span class="ic"><img src="/assets/icons/bug.svg" width="17" height="17" alt=""></span>
-              <span><b>Bug</b><small>Something’s broken</small></span>
-            </button>
-            <button type="button" class="kind" aria-pressed="false" data-kind="Idea">
-              <span class="ic"><img src="/assets/icons/lightbulb.svg" width="17" height="17" alt=""></span>
-              <span><b>Idea</b><small>Make it better</small></span>
-            </button>
-            <button type="button" class="kind" aria-pressed="false" data-kind="Question">
-              <span class="ic"><img src="/assets/icons/message-circle.svg" width="17" height="17" alt=""></span>
-              <span><b>Question</b><small>Ask anything</small></span>
-            </button>
-            <button type="button" class="kind" aria-pressed="false" data-kind="Love it">
-              <span class="ic"><img src="/assets/icons/sparkles.svg" width="17" height="17" alt=""></span>
-              <span><b>Love it</b><small>Say thanks</small></span>
-            </button>
+            <button type="button" class="kind" aria-pressed="true" data-kind="Bug">Bug</button>
+            <button type="button" class="kind" aria-pressed="false" data-kind="Idea">Idea</button>
+            <button type="button" class="kind" aria-pressed="false" data-kind="Question">Question</button>
+            <button type="button" class="kind" aria-pressed="false" data-kind="Love it">Love it</button>
           </div>
         </div>
 
         <label class="fb-field">
-          <span class="fb-label">WHAT HAPPENED?</span>
+          <span class="fb-label" id="msg-label">WHAT HAPPENED?</span>
           <textarea id="msg" required placeholder="When I copy a link from Slack, the popover shows the Slack redirect URL instead of the real page."></textarea>
         </label>
 
@@ -149,12 +122,18 @@
         </button>
         <p class="fb-note" id="err" role="alert" hidden></p>
         <div class="sent" id="sent" role="status">
-          <b style="font-weight:500;font-size:17px">Your email app is open with the message ready.</b>
+          <b style="font-weight:500;font-size:18px">Your email app is open with the message ready.</b>
           <span class="fb-note">Press Send there. <span id="shot-tip" hidden>Remember to attach your screenshot — browsers can’t add files to an email for you.</span> No email app? Write to <a href="mailto:incognitoshimul@gmail.com">incognitoshimul@gmail.com</a>.</span>
         </div>
       </form>
+
+      <aside class="fb-side">
+        <div class="side side-dark"><b>&lt; 24h</b><span>Typical reply time, weekdays.</span></div>
+        <div class="side side-line"><b class="t">We never include</b><span class="m">Your saved links or clipboard, unless you paste them in yourself.</span></div>
+      </aside>
     </section>
   </main>
+</div>
 
 <!-- Full-Bleed Unified Closing CTA + Footer over the Stashbar Fluted Cream & Lime BG -->
 <div class="closing-scene">
@@ -221,8 +200,16 @@
 </div>
 
 <script type="module">
-import '/js/site.js?v=39';
+import '/js/site.js?v=41';
 const TO = 'incognitoshimul@gmail.com';
+// Line the side cards up with the top of the "What happened?" box.
+const side = document.querySelector('.fb-side'), box = document.getElementById('msg');
+const align = () => {
+  if (matchMedia('(max-width:900px)').matches) { side.style.marginTop = ''; return; }
+  side.style.marginTop = '0px';
+  side.style.marginTop = Math.max(0, box.getBoundingClientRect().top - side.getBoundingClientRect().top) + 'px';
+};
+addEventListener('resize', align); document.fonts.ready.then(align); align();
 let kind = 'Bug';
 document.querySelectorAll('.kind').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.kind').forEach(x => x.setAttribute('aria-pressed', String(x === b)));

@@ -1755,7 +1755,8 @@ body{overflow-x:clip}
 @media (prefers-reduced-motion:no-preference){
   .wf-pin.is-pinned .wf-stage-bg{transform:translate3d(0,calc(var(--wf-p,0) * -7%),0) scale(1.12);transform-origin:50% 0;will-change:transform}
   .wf-pin.is-pinned .wf-card,
-  .wf-pin.is-pinned .wf-stage:hover .wf-card{transform:translate3d(0,calc((.5 - var(--wf-f,.5)) * 34px),0);transition:box-shadow .32s ease;will-change:transform}
+  .wf-pin.is-pinned .wf-stage:hover .wf-card{transform:translate3d(0,calc(var(--wf-float,0) * -22px),0);transition:box-shadow .32s ease;will-change:transform}
   .wf-pin.is-pinned .wf-top-pill,
-  .wf-pin.is-pinned .wf-stage:hover .wf-top-pill{transform:translate3d(0,calc((.5 - var(--wf-f,.5)) * 12px),0);transition:none}
+  .wf-pin.is-pinned .wf-stage:hover .wf-top-pill{transform:translate3d(0,calc(var(--wf-float,0) * -9px),0);transition:none}
 }
+.pr-price b .pr-cur{font-size:inherit;color:inherit;letter-spacing:0;margin-right:.06em}
