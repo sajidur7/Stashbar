@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/macos-day.webp?v=18" as="image" type="image/webp">
-<link rel="stylesheet" href="/css/site.css?v=23">
+<link rel="stylesheet" href="/css/site.css?v=26">
 </head>
 <body>
 
@@ -30,6 +30,7 @@
       <a href="/privacy">Privacy</a>
     </nav>
     <div class="nav-end">
+      <a class="nav-price-btn" href="#pricing">See pricing</a>
       <a class="nav-get-btn" data-download href="#">Get Stashbar</a>
     </div>
   </header>
@@ -940,51 +941,57 @@
         <p class="pr-sub">Plans only differ in how many links you save and how long they stay.</p>
       </div>
       <div class="pr-grid" data-reveal>
-        <article class="pr-card ">
-          <header class="pr-head"><span>Free</span></header>
-          <div class="pr-body">
-            <span class="pr-icon"><img src="/assets/icons/user-round.svg" width="18" height="18" alt=""></span>
-            <p class="pr-blurb">For trying Stashbar on one Mac.</p>
-            <div class="pr-price"><b>$0</b><span>forever</span></div>
-            <a class="pr-cta pr-cta-out" data-download href="#">Download free</a>
-            <ul class="pr-feats">
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>2 links a day</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Links are kept for 30 days</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tracker stripping &amp; clean URLs</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Search, tags and pins</span></li>
-            </ul>
+        <article class="pr-card pr-free">
+          <div class="pr-top">
+            <span class="pr-icon"><img src="/assets/icons/hard-drive.svg" width="20" height="20" alt=""></span>
+            
           </div>
+          <h3 class="pr-name">Free</h3>
+          <p class="pr-blurb">Try Stashbar on this Mac.</p>
+          <div class="pr-price"><b>$0</b><span>forever</span></div>
+          <a class="pr-cta pr-cta-out" data-download href="#">Download free</a>
+          <div class="pr-rule" aria-hidden="true"></div>
+          <ul class="pr-feats">
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>2 links a day</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Links kept for 30 days</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Tracker stripping &amp; clean URLs</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Search, tags and pins</span></li>
+          </ul>
         </article>
-        <article class="pr-card is-popular">
-          <header class="pr-head"><span>Monthly</span><span class="pr-badge">Most popular</span></header>
-          <div class="pr-body">
-            <span class="pr-icon"><img src="/assets/icons/refresh-cw.svg" width="18" height="18" alt=""></span>
-            <p class="pr-blurb">For everyday saving across your Macs.</p>
-            <div class="pr-price"><b>$4.99</b><span>/ month</span></div>
-            <a class="pr-cta pr-cta-pri" data-download href="#">Get Monthly</a>
-            <ul class="pr-feats">
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Unlimited links, every day</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Kept forever — nothing expires</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Sync across all your Macs</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Backed up to your Google account</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Cancel anytime</span></li>
-            </ul>
+        <article class="pr-card pr-popular">
+          <div class="pr-top">
+            <span class="pr-icon"><img src="/assets/icons/cloud.svg" width="20" height="20" alt=""></span>
+            <span class="pr-badge">Most popular</span>
           </div>
+          <h3 class="pr-name">Monthly</h3>
+          <p class="pr-blurb">Everyday saving, synced across your Macs.</p>
+          <div class="pr-price"><b>$4.99</b><span>/ month</span></div>
+          <a class="pr-cta pr-cta-pri" data-download href="#">Get Monthly</a>
+          <div class="pr-rule" aria-hidden="true"></div>
+          <ul class="pr-feats">
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Unlimited links, every day</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Kept forever, nothing expires</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Sync across all your Macs</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Backed up to your Google account</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Cancel anytime</span></li>
+          </ul>
         </article>
-        <article class="pr-card ">
-          <header class="pr-head"><span>Lifetime</span></header>
-          <div class="pr-body">
-            <span class="pr-icon"><img src="/assets/icons/sparkles.svg" width="18" height="18" alt=""></span>
-            <p class="pr-blurb">Pay once. Stashbar is yours for good.</p>
-            <div class="pr-price"><b>$9.99</b><span>one time</span></div>
-            <a class="pr-cta pr-cta-dark" data-download href="#">Get Lifetime</a>
-            <ul class="pr-feats">
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Everything in Monthly</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>One payment, no subscription</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>All future updates included</span></li>
-            <li><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m8 12.4 2.7 2.6L16 9.6" stroke="var(--pr-check-ink,#fff)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Priority support</span></li>
-            </ul>
+        <article class="pr-card pr-life">
+          <div class="pr-top">
+            <span class="pr-icon"><img src="/assets/brand/pin-mark-ink.svg" width="20" height="20" alt=""></span>
+            
           </div>
+          <h3 class="pr-name">Lifetime</h3>
+          <p class="pr-blurb">Pay once. Stashbar is yours for good.</p>
+          <div class="pr-price"><b>$9.99</b><span>one time</span></div>
+          <a class="pr-cta pr-cta-dark" data-download href="#">Get Lifetime</a>
+          <div class="pr-rule" aria-hidden="true"></div>
+          <ul class="pr-feats">
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Everything in Monthly</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>One payment, no subscription</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>All future updates included</span></li>
+          <li><img src="/assets/icons/check.svg" width="16" height="16" alt=""><span>Priority support</span></li>
+          </ul>
         </article>
       </div>
     </section>
@@ -1086,6 +1093,6 @@
   </footer>
 </div>
 
-<script type="module" src="/js/site.js?v=24"></script>
+<script type="module" src="/js/site.js?v=26"></script>
 </body>
 </html>

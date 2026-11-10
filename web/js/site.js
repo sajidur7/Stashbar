@@ -1191,3 +1191,22 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
 } else {
   document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('is-revealed'));
 }
+
+// ---- "See pricing": smooth scroll to the pricing section (also when arriving via /#pricing) ----
+{
+  const pricing = document.getElementById('pricing');
+  if (pricing) {
+    const goToPricing = (smooth = true) => {
+      const navH = (document.querySelector('.nav-wrap')?.offsetHeight || 52) + 20;
+      const y = pricing.getBoundingClientRect().top + window.scrollY - navH;
+      window.scrollTo({ top: y, behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto' });
+    };
+    document.querySelectorAll('a[href="#pricing"], a[href="/#pricing"]').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); history.replaceState(null, '', '#pricing'); goToPricing(); });
+    });
+    if (location.hash === '#pricing') {
+      // The hero resizes the page after load; land on pricing once layout has settled.
+      window.addEventListener('load', () => setTimeout(() => goToPricing(false), 60));
+    }
+  }
+}
