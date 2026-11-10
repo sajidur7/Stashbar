@@ -136,22 +136,81 @@ final class HotKeys {
     private var handlerInstalled = false
 
     func reload() {
-        for r in refs { if let r { UnregisterEventHotKey(r) } }
-        refs = []
+        suspend()
         installHandler()
-        let (mods, key) = Self.parse(Prefs.shared.openShortcut)
+        let mods = Self.mods(Prefs.shared.openShortcut)
+        let key = UInt32(Prefs.shared.openKeyCode)
         register(id: 1, key: key, mods: mods)
-        // Quick stash = open shortcut + Shift (⌥⇧S by default)
-        register(id: 2, key: key, mods: mods | UInt32(shiftKey))
+        // Quick stash = open shortcut + Shift (⌥⇧S by default); + Control if Shift is already used.
+        if let q = Self.quickMods(mods) { register(id: 2, key: key, mods: q) }
     }
 
-    static func parse(_ s: String) -> (UInt32, UInt32) {
+    /// Unregisters the hotkeys (used while recording a new shortcut so the old one doesn't fire).
+    func suspend() {
+        for r in refs { if let r { UnregisterEventHotKey(r) } }
+        refs = []
+    }
+
+    static func mods(_ s: String) -> UInt32 {
         var m: UInt32 = 0
         if s.contains("⌥") { m |= UInt32(optionKey) }
         if s.contains("⌃") { m |= UInt32(controlKey) }
         if s.contains("⌘") { m |= UInt32(cmdKey) }
         if s.contains("⇧") { m |= UInt32(shiftKey) }
-        return (m, UInt32(kVK_ANSI_S))
+        return m
+    }
+
+    static func quickMods(_ m: UInt32) -> UInt32? {
+        if m & UInt32(shiftKey) == 0 { return m | UInt32(shiftKey) }
+        if m & UInt32(controlKey) == 0 { return m | UInt32(controlKey) }
+        return nil
+    }
+
+    /// Label for the quick-stash shortcut, e.g. "⌥⇧S".
+    static var quickStashLabel: String {
+        let s = Prefs.shared.openShortcut
+        let key = String(s.drop { "⌃⌥⇧⌘".contains($0) })
+        let m = mods(s)
+        guard let q = quickMods(m) else { return "—" }
+        return label(mods: q, key: key)
+    }
+
+    static func label(mods m: UInt32, key: String) -> String {
+        var out = ""
+        if m & UInt32(controlKey) != 0 { out += "⌃" }
+        if m & UInt32(optionKey) != 0 { out += "⌥" }
+        if m & UInt32(shiftKey) != 0 { out += "⇧" }
+        if m & UInt32(cmdKey) != 0 { out += "⌘" }
+        return out + key
+    }
+
+    /// Human label for a key press, e.g. "K", "Space", "F5", "↑".
+    static func keyName(_ event: NSEvent) -> String {
+        let special: [Int: String] = [
+            kVK_Space: "Space", kVK_Return: "↩", kVK_Tab: "⇥", kVK_Delete: "⌫", kVK_ForwardDelete: "⌦",
+            kVK_LeftArrow: "←", kVK_RightArrow: "→", kVK_UpArrow: "↑", kVK_DownArrow: "↓",
+            kVK_Home: "↖", kVK_End: "↘", kVK_PageUp: "⇞", kVK_PageDown: "⇟",
+            kVK_F1: "F1", kVK_F2: "F2", kVK_F3: "F3", kVK_F4: "F4", kVK_F5: "F5", kVK_F6: "F6",
+            kVK_F7: "F7", kVK_F8: "F8", kVK_F9: "F9", kVK_F10: "F10", kVK_F11: "F11", kVK_F12: "F12",
+        ]
+        if let s = special[Int(event.keyCode)] { return s }
+        return (event.charactersIgnoringModifiers ?? "?").uppercased()
+    }
+
+    /// Carbon modifier mask from an NSEvent.
+    static func carbonMods(_ f: NSEvent.ModifierFlags) -> UInt32 {
+        var m: UInt32 = 0
+        if f.contains(.command) { m |= UInt32(cmdKey) }
+        if f.contains(.option) { m |= UInt32(optionKey) }
+        if f.contains(.control) { m |= UInt32(controlKey) }
+        if f.contains(.shift) { m |= UInt32(shiftKey) }
+        return m
+    }
+
+    /// Applies a preset like "⌥S" (all presets use the S key).
+    static func applyPreset(_ label: String) {
+        Prefs.shared.openKeyCode = kVK_ANSI_S
+        Prefs.shared.openShortcut = label
     }
 
     private func register(id: UInt32, key: UInt32, mods: UInt32) {

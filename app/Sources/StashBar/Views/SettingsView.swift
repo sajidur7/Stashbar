@@ -424,18 +424,29 @@ struct OnboardingPane: View {
 
 struct ShortcutsPane: View {
     @ObservedObject private var prefs = Prefs.shared
+    @StateObject private var recording = ShortcutRecording()
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SettingsGroup(title: "Global") {
-                SettingsRow(icon: "panel-top-open", label: "Open Stashbar", hint: "From any app") {
-                    Menu {
-                        ForEach(HotKeys.options, id: \.self) { o in Button(o) { prefs.openShortcut = o } }
-                    } label: { KeyCap(label: prefs.openShortcut) }
-                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
-                    .help("Click to change")
+                SettingsRow(icon: "panel-top-open", label: "Open Stashbar",
+                            hint: recording.isRecording ? "Press the keys you want, or Esc to cancel" : "From any app · click the key to change") {
+                    if recording.isRecording {
+                        RecordingCap(recording: recording)
+                    } else {
+                        HStack(spacing: 10) {
+                            ShortcutPicker(recording: recording) { KeyCap(label: prefs.openShortcut) }
+                                .help("Pick a preset or record your own")
+                            Button("Record…") { recording.start() }
+                                .buttonStyle(.plain).font(12).foregroundColor(Tok.muted).underline()
+                        }
+                    }
                 }
-                SettingsRow(icon: "clipboard-paste", label: "Stash clipboard instantly", hint: "Skips the popover") {
-                    KeyCap(label: shifted)
+                SettingsRow(icon: "clipboard-paste", label: "Stash clipboard instantly", hint: "Your shortcut + ⇧ · skips the popover") {
+                    KeyCap(label: HotKeys.quickStashLabel)
+                }
+                SettingsRow(icon: "rotate-ccw", label: "Reset shortcut", hint: "Back to ⌥S") {
+                    RowButton(title: "Reset") { HotKeys.applyPreset("⌥S") }
                 }
             }
             SettingsGroup(title: "In Stashbar") {
@@ -446,11 +457,7 @@ struct ShortcutsPane: View {
                 SettingsRow(icon: "settings-2", label: "Settings", hint: "From anywhere in Stashbar") { KeyCap(icon: "command", label: ",") }
             }
         }
-    }
-
-    private var shifted: String {
-        let s = prefs.openShortcut
-        return s.contains("⇧") ? s : s.replacingOccurrences(of: "S", with: "⇧S")
+        .onDisappear { if recording.isRecording { recording.cancel() } }
     }
 }
 

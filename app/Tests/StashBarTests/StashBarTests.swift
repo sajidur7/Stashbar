@@ -119,4 +119,13 @@ final class MiscTests: XCTestCase {
         XCTAssertEqual(a.initials, "SR")
         XCTAssertEqual(a.firstName, "Sajid")
     }
+
+    func testShortcutModifiers() {
+        let opt = HotKeys.mods("⌥S")
+        XCTAssertEqual(HotKeys.label(mods: opt, key: "S"), "⌥S")
+        XCTAssertEqual(HotKeys.label(mods: HotKeys.quickMods(opt)!, key: "S"), "⌥⇧S")
+        XCTAssertNil(HotKeys.quickMods(HotKeys.mods("⌃⇧K"))) // ⇧ and ⌃ both taken: no quick-stash combo
+        XCTAssertNil(HotKeys.quickMods(HotKeys.mods("⌃⇧⌘K")))
+        XCTAssertEqual(HotKeys.label(mods: HotKeys.quickMods(HotKeys.mods("⇧⌘S"))!, key: "S"), "⌃⇧⌘S")
+    }
 }

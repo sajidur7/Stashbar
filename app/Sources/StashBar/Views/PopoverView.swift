@@ -63,7 +63,7 @@ struct PopoverView: View {
         let list = store.recent(query: ui.query)
         if store.clipboardNotALink {
             PopoverEmpty(icon: "clipboard-x", title: "That’s not a link.",
-                         message: "Stashbar only pins web addresses. Copy a URL and press \(prefs.openShortcut.replacingOccurrences(of: "S", with: "⇧S")) again.",
+                         message: "Stashbar only pins web addresses. Copy a URL and press \(HotKeys.quickStashLabel) again.",
                          primary: nil, secondary: ("Paste a URL instead", { store.clipboardNotALink = false; ui.adding = true }))
         } else if store.active.isEmpty {
             PopoverEmpty(icon: nil, title: "Nothing stashed yet.",

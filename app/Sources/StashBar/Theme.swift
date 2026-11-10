@@ -363,9 +363,21 @@ struct KeyCap: View {
         }
         .padding(.horizontal, 12)
         .frame(height: height)
-        .background(RoundedRectangle(cornerRadius: Radius.control).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Palette.sand, lineWidth: 1))
-        .shadow(color: Palette.sand, radius: 0, x: 0, y: 2)
+        .background(KeyCapBackground(radius: Radius.control, depth: 2))
+    }
+}
+
+/// Physical-key look: white face, 1px sand border, and a solid sand "base" underneath.
+/// Drawn as shapes (not a shadow) so the glyph on the key never gets a double outline.
+struct KeyCapBackground: View {
+    var radius: CGFloat = Radius.control
+    var depth: CGFloat = 3
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: radius).fill(Palette.sand).offset(y: depth)
+            RoundedRectangle(cornerRadius: radius).fill(Color.white)
+            RoundedRectangle(cornerRadius: radius).strokeBorder(Palette.sand, lineWidth: 1)
+        }
     }
 }
 

@@ -22,7 +22,11 @@ final class Prefs: ObservableObject {
     @Published var dismissedTips: [String] { didSet { d.set(dismissedTips, forKey: "dismissedTips") } }
 
     // Shortcuts
+    /// Display label (e.g. "⌥S", "⌃⇧K"). Setting it re-registers the global hotkeys,
+    /// so set `openKeyCode` first when changing the key.
     @Published var openShortcut: String { didSet { d.set(openShortcut, forKey: "openShortcut"); HotKeys.shared.reload() } }
+    /// Carbon virtual key code for the open shortcut (default: S).
+    @Published var openKeyCode: Int { didSet { d.set(openKeyCode, forKey: "openKeyCode") } }
 
     // Cleaning
     @Published var stripTrackers: Bool { didSet { d.set(stripTrackers, forKey: "stripTrackers") } }
@@ -58,6 +62,7 @@ final class Prefs: ObservableObject {
         inlineTips = d.bool(forKey: "inlineTips")
         dismissedTips = d.stringArray(forKey: "dismissedTips") ?? []
         openShortcut = d.string(forKey: "openShortcut") ?? "⌥S"
+        openKeyCode = d.object(forKey: "openKeyCode") as? Int ?? 1 // kVK_ANSI_S
         stripTrackers = d.bool(forKey: "stripTrackers")
         copyClean = d.bool(forKey: "copyClean")
         expandShortLinks = d.bool(forKey: "expandShortLinks")

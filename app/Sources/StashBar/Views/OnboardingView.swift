@@ -36,7 +36,9 @@ struct OnboardingRoot: View {
             case .done: DoneStep(model: model)
             }
         }
-        .frame(width: 480, height: 620)
+        // Fill the whole window, including the transparent title-bar area, so no strip of
+        // window background shows at the bottom.
+        .frame(minWidth: 480, maxWidth: .infinity, minHeight: 620, maxHeight: .infinity)
         .ignoresSafeArea()
         .animation(.easeOut(duration: 0.2), value: model.step)
     }
@@ -315,6 +317,7 @@ struct RestoreStep: View {
 struct ShortcutStep: View {
     @ObservedObject var model: OnboardingModel
     @ObservedObject private var prefs = Prefs.shared
+    @StateObject private var recording = ShortcutRecording()
     @State private var launch = Prefs.shared.launchAtLogin
 
     var body: some View {
@@ -322,27 +325,36 @@ struct ShortcutStep: View {
             Spacer().frame(height: 20)
             StepLabel(text: "STEP 3 OF 4")
             Text("One shortcut to remember.").heading(36).foregroundColor(Tok.text)
-            HStack(spacing: 12) {
-                ForEach(Array(keys.enumerated()), id: \.offset) { _, k in
-                    Group {
-                        if let icon = k.1 { Icon(name: icon, size: 26, color: Palette.ink) } else { Text(k.0).font(22, .medium).foregroundColor(Palette.ink) }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 10) {
+                    let size: CGFloat = keys.count > 2 ? 52 : 64
+                    ForEach(Array(keys.enumerated()), id: \.offset) { _, k in
+                        Group {
+                            if let icon = k.1 {
+                                Icon(name: icon, size: size * 0.4, color: Palette.ink)
+                            } else {
+                                Text(k.0).font(k.0.count > 1 ? 15 : 22, .medium).foregroundColor(Palette.ink)
+                            }
+                        }
+                        .frame(minWidth: size, minHeight: size)
+                        .padding(.horizontal, k.0.count > 1 ? 10 : 0)
+                        .background(KeyCapBackground(radius: Radius.card, depth: 3))
+                        .padding(.bottom, 3)
                     }
-                    .frame(width: 64, height: 64)
-                    .background(RoundedRectangle(cornerRadius: Radius.card).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Palette.line, lineWidth: 1))
-                    .shadow(color: Palette.sand, radius: 0, y: 3)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Opens Stashbar").font(13).foregroundColor(Tok.text)
+                        Text("from any app").font(13).foregroundColor(Tok.muted)
+                    }
+                    .padding(.leading, 6)
+                    Spacer(minLength: 4)
+                    if !recording.isRecording {
+                        ShortcutPicker(recording: recording) {
+                            HStack(spacing: 4) { Text("Change").font(13).underline(); Icon(name: "arrow-right", size: 10).rotationEffect(.degrees(90)) }
+                                .foregroundColor(Tok.text)
+                        }
+                    }
                 }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Opens Stashbar").font(13).foregroundColor(Tok.text)
-                    Text("from any app").font(13).foregroundColor(Tok.muted)
-                }
-                .padding(.leading, 8)
-                Spacer()
-                Menu {
-                    ForEach(HotKeys.options, id: \.self) { o in Button(o) { prefs.openShortcut = o } }
-                } label: { Text("Change").font(13).underline() }
-                .menuStyle(.borderlessButton)
-                .fixedSize()
+                if recording.isRecording { RecordingCap(recording: recording) }
             }
             .padding(20)
             .background(RoundedRectangle(cornerRadius: Radius.card).fill(Tok.surface))
@@ -368,16 +380,23 @@ struct ShortcutStep: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(Tok.bg)
         .onAppear { if !prefs.onboarded && !model.replay { launch = true; prefs.launchAtLogin = true } }
+        .onDisappear { if recording.isRecording { recording.cancel() } }
     }
 
+    /// "⌃⇧F5" → [⌃, ⇧, F5]: one cap per modifier, then the key as a single cap.
     private var keys: [(String, String?)] {
-        prefs.openShortcut.map { ch -> (String, String?) in
+        let s = prefs.openShortcut
+        let modChars = s.prefix { "⌃⌥⇧⌘".contains($0) }
+        var out: [(String, String?)] = modChars.map { ch in
             switch ch {
             case "⌥": return ("⌥", "option")
             case "⌘": return ("⌘", "command")
             default: return (String(ch), nil)
             }
         }
+        let key = String(s.dropFirst(modChars.count))
+        if !key.isEmpty { out.append((key, nil)) }
+        return out
     }
 
     private func permRow(_ icon: String, _ label: String, _ hint: String, _ on: Binding<Bool>) -> some View {
@@ -437,7 +456,6 @@ struct DoneStep: View {
             .buttonStyle(.plain)
             Spacer()
             HStack {
-                Text("Then press").font(13).foregroundColor(Tok.muted)
                 Spacer()
                 Button {
                     prefs.onboarded = true
