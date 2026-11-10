@@ -1112,6 +1112,9 @@ if (wfShowcase) {
         const idx = Math.floor(pos);
         if (idx !== wfIdx) setWfStep(idx, true);
         const frac = pos - idx;
+        // Parallax: overall progress and progress within the open step, for the CSS layers.
+        pin.style.setProperty('--wf-p', p.toFixed(4));
+        pin.style.setProperty('--wf-f', frac.toFixed(4));
         const fill = wfItems[idx]?.querySelector('.wf-line-fill');
         if (fill) fill.style.width = (frac * 100).toFixed(2) + '%';
         if (dots) dots.querySelectorAll('i').forEach((el, i) => {
