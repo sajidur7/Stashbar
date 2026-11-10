@@ -6,12 +6,18 @@
 <title>Welcome to Stashbar</title>
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/css/site.css?v=43">
+<style>
+/* Inline shortcut keys: smaller than the 30px keycaps, grouped, with room from the words */
+.wl-text{line-height:2}
+.wl-text .keys{display:inline-flex;gap:3px;margin:0 4px;vertical-align:middle;position:relative;top:-1px}
+.wl-text .kbd{min-width:24px;height:24px;padding:0 6px;font-size:12px;border-radius:6px;box-shadow:0 1.5px 0 var(--sand)}
+</style>
 </head>
 <body class="auth-body">
 <main class="auth-card">
   <img src="/assets/brand/app-icon-accent.svg" width="56" height="56" alt="">
   <h1>Nice, that was your first stash.</h1>
-  <p>Copy any link, press <span class="kbd">⌥</span> <span class="kbd">S</span>, and it’s saved with trackers stripped. Press <span class="kbd">⌘</span> <span class="kbd">E</span> in Stashbar to browse everything.</p>
+  <p class="wl-text">Copy any link, press <span class="keys"><span class="kbd">⌥</span><span class="kbd">S</span></span> and it’s saved with trackers stripped. Press <span class="keys"><span class="kbd">⌘</span><span class="kbd">E</span></span> in Stashbar to browse everything.</p>
   <a class="btn btn-outline" href="/help">Keyboard guide</a>
 </main>
 </body>

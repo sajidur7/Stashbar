@@ -1337,6 +1337,14 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
         }
       });
       q.textContent = cur === 'BDT' ? 'Outside Bangladesh?' : 'In Bangladesh?';
+      // Paid plans: BDT opens the taka checkout with that plan selected; USD still downloads for now.
+      document.querySelectorAll('#pricing .pr-card').forEach(card => {
+        const a = card.querySelector('.pr-cta');
+        const name = (card.querySelector('.pr-name')?.textContent || '').trim();
+        const plan = name === 'Monthly' ? 'monthly' : name === 'Lifetime' ? 'lifetime' : null;
+        if (!a || !plan) return;
+        a.href = cur === 'BDT' ? `/pay/bd?plan=${plan}` : 'https://github.com/sajidur7/Stashbar/releases/latest/download/Stashbar.dmg';
+      });
       btn.textContent = cur === 'BDT' ? 'Show prices in USD' : 'Show prices in BDT';
       btn.dataset.cur = cur;
     };

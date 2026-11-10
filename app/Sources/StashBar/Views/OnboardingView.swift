@@ -349,7 +349,7 @@ struct ShortcutStep: View {
                     Spacer(minLength: 4)
                     if !recording.isRecording {
                         ShortcutPicker(recording: recording) {
-                            HStack(spacing: 4) { Text("Change").font(13).underline(); Icon(name: "arrow-right", size: 10).rotationEffect(.degrees(90)) }
+                            HStack(spacing: 6) { Icon(name: "pencil-edit", size: 14, color: Tok.text); Text("Change").font(13).underline() }
                                 .foregroundColor(Tok.text)
                         }
                     }

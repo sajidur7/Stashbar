@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pay in taka · Stashbar</title>
+<meta name="description" content="Get Stashbar in Bangladeshi taka. Pay by card or mobile banking; your plan unlocks after the payment is confirmed.">
+<link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/site.css?v=45">
+<style>
+.ck [hidden]{display:none!important}
+.bd{max-width:1080px;margin:0 auto;padding:64px 48px 40px}
+.bd-eyebrow{display:flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.bd-flag{width:22px;height:14px;border-radius:3px;background:#006a4e;position:relative;flex:none}
+.bd-flag::after{content:"";position:absolute;left:7px;top:3px;width:8px;height:8px;border-radius:50%;background:#f42a41}
+.bd h1{margin:16px 0 14px;font-weight:500;font-size:56px;line-height:1.02;letter-spacing:-.045em}
+.bd-lead{margin:0;font-size:17px;line-height:1.6;color:var(--muted);max-width:640px}
+.bd-h{margin:48px 0 16px;font-weight:500;font-size:18px;letter-spacing:-.02em}
+.bd-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.bd-plan{position:relative;text-align:left;padding:24px;border-radius:var(--r-l);border:1px solid var(--line);background:#fff;cursor:pointer;font:inherit;color:var(--ink);display:flex;flex-direction:column;gap:10px;transition:border-color .15s,box-shadow .15s,transform .1s}
+.bd-plan:hover{border-color:var(--sand)}
+.bd-plan:active{transform:scale(.995)}
+.bd-plan[aria-checked="true"]{border:2px solid var(--ink);padding:23px;box-shadow:0 18px 40px -24px rgba(12,10,8,.3)}
+.bd-plan-top{display:flex;align-items:center;justify-content:space-between}
+.bd-plan-top b{font-weight:500;font-size:18px;letter-spacing:-.02em}
+.bd-tag{font-size:11px;letter-spacing:.12em;padding:5px 9px;border-radius:999px;text-transform:uppercase;background:var(--accent);color:var(--ink)}
+.bd-price{display:flex;align-items:baseline;gap:8px}
+.bd-price b{font-weight:500;font-size:40px;letter-spacing:-.04em;line-height:1}
+.bd-price span{font-size:14px;color:var(--muted)}
+.bd-plan p{margin:0;font-size:15px;line-height:1.55;color:var(--muted)}
+.bd-cta{margin-top:20px;width:100%;height:56px;border:0;border-radius:var(--r-c);background:var(--ink);color:#fff;font:500 17px var(--font);cursor:pointer;transition:background-color .15s,transform .1s}
+.bd-cta:hover{background:var(--graphite)}.bd-cta:active{transform:scale(.995)}
+.bd-methods{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:var(--r-l);background:var(--beige)}
+.bd-methods span{font-size:13px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.bd-methods em{font-style:normal;font-size:13px;color:var(--muted);margin-right:4px}
+.bd-note{margin:16px 0 0;font-size:14px;color:var(--muted)}
+.bd-note a{color:var(--ink)}
+.bd-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+.bd-steps .n{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bd-steps h3{margin:8px 0;font-weight:500;font-size:18px;letter-spacing:-.02em}
+.bd-steps p{margin:0;font-size:15px;line-height:1.6;color:var(--muted)}
+.bd-foot{margin:48px 0 0;text-align:center;font-size:15px;color:var(--muted)}
+.bd-foot a{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+.ck{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(12,10,8,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ck.on{display:flex}
+.ck-card{position:relative;width:100%;max-width:460px;max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:24px;padding:32px;box-shadow:0 40px 90px -30px rgba(12,10,8,.45);display:flex;flex-direction:column;gap:16px}
+.ck-x{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:var(--r-c);border:0;background:var(--beige);cursor:pointer;display:grid;place-items:center}
+.ck-eyebrow{font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;padding-right:44px}
+.ck-price{display:flex;align-items:baseline;gap:8px;margin-top:-6px}
+.ck-price b{font-weight:500;font-size:34px;letter-spacing:-.04em}
+.ck-price span{font-size:14px;color:var(--muted)}
+.ck p{margin:0;font-size:15px;line-height:1.55;color:var(--muted)}
+.ck label{display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:500}
+.ck input{height:50px;padding:0 16px;border-radius:var(--r-c);border:1px solid var(--line);background:#fff;font:400 16px var(--font);color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.ck input:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(228,242,34,.55)}
+.ck input[aria-invalid="true"]{border-color:#c23b22}
+.ck-err{font-size:13px;color:#c23b22;font-weight:400}
+.ck-err:empty{display:none}
+.ck-promo-link{align-self:flex-start;background:none;border:0;padding:0;font:500 14px var(--font);color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.ck-go{height:54px;border:0;border-radius:var(--r-c);background:var(--ink);color:#fff;font:500 16px var(--font);cursor:pointer;margin-top:4px}
+.ck-go:hover{background:var(--graphite)}
+.ck-done{display:none;flex-direction:column;gap:14px}
+.ck-done.on{display:flex}
+.ck-sum{margin:0;border-radius:var(--r-l);background:var(--beige);padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
+.ck-sum dt{color:var(--muted)}.ck-sum dd{margin:0;text-align:right;overflow-wrap:anywhere}
+.ck-mail{display:flex;align-items:center;justify-content:center;height:52px;border-radius:var(--r-c);background:var(--accent);color:var(--ink);font-weight:500;text-decoration:none}
+.pr-taka{display:inline-block;height:.72em;width:auto;margin-right:.08em;vertical-align:baseline}
+@media (max-width:760px){.bd{padding:40px 16px 24px}.bd h1{font-size:40px}.bd-plans,.bd-steps{grid-template-columns:1fr}.ck-card{padding:24px}}
+</style>
+</head>
+<body>
+<div class="nav-wrap">
+  <header class="nav">
+    <a class="brand" href="/">
+      <img src="/assets/brand/app-icon-accent.svg" width="24" height="24" alt="">
+      <span>Stashbar</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/#demo">Desktop</a>
+      <a href="/help">Help</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+    <div class="nav-end">
+      <a class="nav-price-btn" href="/#pricing">See pricing</a>
+      <a class="nav-get-btn" data-download href="#">Get Stashbar</a>
+    </div>
+  </header>
+</div>
+<main class="bd">
+  <div class="bd-eyebrow"><span class="bd-flag" aria-hidden="true"></span>Bangladesh · Pay in taka</div>
+  <h1>Get Stashbar in taka</h1>
+  <p class="bd-lead">Pay in BDT by card or mobile banking. Your plan unlocks on your Stashbar account once the payment is confirmed, and the receipt arrives by email.</p>
+
+  <h2 class="bd-h">Choose a plan</h2>
+  <div class="bd-plans" role="radiogroup" aria-label="Plan">
+    <button type="button" class="bd-plan" role="radio" aria-checked="false" data-plan="monthly" data-name="Monthly" data-price="499" data-per="/ month">
+      <span class="bd-plan-top"><b>Monthly</b></span>
+      <span class="bd-price"><b><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>499</b><span>/ month</span></span>
+      <p>Unlimited links, kept forever, synced across your Macs. Cancel anytime.</p>
+    </button>
+    <button type="button" class="bd-plan" role="radio" aria-checked="true" data-plan="lifetime" data-name="Lifetime" data-price="999" data-per="once">
+      <span class="bd-plan-top"><b>Lifetime</b><span class="bd-tag">Most popular</span></span>
+      <span class="bd-price"><b><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>999</b><span>once</span></span>
+      <p>Everything in Monthly, one payment, all future updates and priority support.</p>
+    </button>
+  </div>
+
+  <button type="button" class="bd-cta" id="bdCta">Continue with Lifetime · ৳999</button>
+  <div class="bd-methods" aria-label="Payment methods"><em>Pay with</em><span>Visa</span><span>Mastercard</span><span>bKash</span><span>Nagad</span><span>Rocket</span><span>+ others</span></div>
+  <p class="bd-note">Prices are in Bangladeshi taka and include everything. Same plan as the USD prices. <a href="/privacy">Privacy</a></p>
+
+  <div class="bd-steps">
+    <div><span class="n">01</span><h3>Pay in taka</h3><p>On the secure payment page, by card or mobile banking. On a computer, scan the QR code to pay from your phone.</p></div>
+    <div><span class="n">02</span><h3>Keep your reference</h3><p>Your receipt shows a reference number. If anything goes wrong, it’s all we need to find your payment.</p></div>
+    <div><span class="n">03</span><h3>Unlocks in the app</h3><p>Sign in to Stashbar with the same email. Unlimited links and sync switch on automatically.</p></div>
+  </div>
+
+  <p class="bd-foot">Already paid? <a href="/feedback">Get help with your plan</a></p>
+  <p class="bd-foot" style="margin-top:10px">Not in Bangladesh? <a href="/#pricing" id="toUsd">See USD prices</a></p>
+</main>
+
+<div class="ck" id="ck" role="dialog" aria-modal="true" aria-labelledby="ckTitle">
+  <div class="ck-card">
+    <button type="button" class="ck-x" id="ckX" aria-label="Close"><img src="/assets/icons/x.svg" width="14" height="14" alt=""></button>
+    <span class="ck-eyebrow" id="ckTitle">Pay in taka · Stashbar Lifetime</span>
+    <div class="ck-price"><b id="ckPrice"></b><span id="ckPer">once</span></div>
+    <form id="ckForm" novalidate style="display:flex;flex-direction:column;gap:16px">
+      <p>Your receipt is sent to this email, and your plan unlocks on the Stashbar account that uses it.</p>
+      <label>Full name<input id="ckName" autocomplete="name" required><span class="ck-err" data-for="ckName"></span></label>
+      <label>Email<input id="ckEmail" type="email" autocomplete="email" required><span class="ck-err" data-for="ckEmail"></span></label>
+      <label>Mobile number<input id="ckPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01712345678" required><span class="ck-err" data-for="ckPhone"></span></label>
+      <button type="button" class="ck-promo-link" id="ckPromoLink">Have a promo code?</button>
+      <label id="ckPromoWrap" hidden>Promo code<input id="ckPromo" autocomplete="off"></label>
+      <button type="submit" class="ck-go">Continue</button>
+    </form>
+    <div class="ck-done" id="ckDone" role="status">
+      <p style="color:var(--ink);font-size:17px;font-weight:500">Checkout opens here soon.</p>
+      <p>Online payment isn’t switched on yet, so nothing has been charged. Send us your order and we’ll reply with how to pay, or email you the moment checkout opens.</p>
+      <dl class="ck-sum" id="ckSum"></dl>
+      <a class="ck-mail" id="ckMail" href="#">Email my order</a>
+    </div>
+  </div>
+</div>
+
+<!-- Full-Bleed Unified Closing CTA + Footer over the Stashbar Fluted Cream & Lime BG -->
+<div class="closing-scene">
+  <img class="closing-bg" src="/assets/macos-day.webp?v=18" alt="" loading="lazy" decoding="async">
+  <div class="closing-top-fade" aria-hidden="true"></div>
+
+  <section class="closing-cta" aria-label="Download Stashbar" data-reveal>
+    <h2 class="closing-title" data-scroll-title>Stop losing the links<br>worth keeping.</h2>
+    <p class="closing-sub">Whether it’s an article, a GitHub repo, or a reference thread, Stashbar catches every link from your Mac menu bar, strips the trackers, and keeps it ready whenever you search.</p>
+    <div class="closing-actions">
+      <a class="btn btn-dark" data-download href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#ffffff" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn btn-closing-light" href="/help">Keyboard shortcuts</a>
+    </div>
+    <span class="closing-meta" data-version>Free plan · macOS 13+ · Apple silicon &amp; Intel</span>
+  </section>
+
+  <footer class="closing-footer">
+    <div class="closing-foot-inner">
+      <div class="closing-foot-main">
+        <div class="closing-brand">
+          <a class="closing-brand-link" href="/">
+            <img src="/assets/brand/pin-mark-ink.svg" width="22" height="22" alt="">
+            <span>Stashbar</span>
+          </a>
+          <p>Every link you copy, saved and cleaned.<br>Local-first on macOS.</p>
+        </div>
+
+        <nav class="closing-cols" aria-label="Footer">
+          <div class="closing-col">
+            <h4>Product</h4>
+            <a data-download href="#">Download for Mac</a>
+            <a href="/#demo">Interactive demo</a>
+            <a href="/#features">Features</a>
+          </div>
+          <div class="closing-col">
+            <h4>Learn</h4>
+            <a href="/#how">How it works</a>
+            <a href="/help">Keyboard shortcuts</a>
+            <a href="/#faq">FAQ</a>
+          </div>
+          <div class="closing-col">
+            <h4>Project</h4>
+            <a href="/privacy">Privacy policy</a>
+            <a href="/help">Help &amp; support</a>
+            <a href="/feedback">Send feedback</a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class="closing-bottom-bar">
+      <div class="closing-bottom-inner">
+        <span>© 2026 Stashbar. Built with care for macOS.</span>
+        <div class="closing-bottom-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/help">Help &amp; Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script type="module">
+import '/js/site.js?v=46';
+const TAKA = '<svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>';
+const plans = [...document.querySelectorAll('.bd-plan')];
+const cta = document.getElementById('bdCta');
+let sel = plans.find(p => p.dataset.plan === new URLSearchParams(location.search).get('plan')) || plans.find(p => p.getAttribute('aria-checked') === 'true');
+const fmt = n => Number(n).toLocaleString('en-US');
+const pick = p => {
+  sel = p;
+  plans.forEach(x => x.setAttribute('aria-checked', String(x === p)));
+  cta.innerHTML = `Continue with ${p.dataset.name} · ${TAKA}${fmt(p.dataset.price)}`;
+  history.replaceState(null, '', `?plan=${p.dataset.plan}`);
+};
+plans.forEach(p => p.addEventListener('click', () => pick(p)));
+pick(sel);
+
+const ck = document.getElementById('ck'), form = document.getElementById('ckForm'), done = document.getElementById('ckDone');
+const $ = id => document.getElementById(id);
+const open = () => {
+  $('ckTitle').textContent = `Pay in taka · Stashbar ${sel.dataset.name}`;
+  $('ckPrice').innerHTML = TAKA + fmt(sel.dataset.price);
+  $('ckPer').textContent = sel.dataset.per;
+  form.hidden = false; done.classList.remove('on');
+  ck.classList.add('on'); document.body.style.overflow = 'hidden';
+  setTimeout(() => $('ckName').focus(), 30);
+};
+const close = () => { ck.classList.remove('on'); document.body.style.overflow = ''; cta.focus(); };
+cta.addEventListener('click', open);
+$('ckX').addEventListener('click', close);
+ck.addEventListener('click', e => { if (e.target === ck) close(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && ck.classList.contains('on')) close(); });
+$('ckPromoLink').addEventListener('click', e => { e.currentTarget.hidden = true; $('ckPromoWrap').hidden = false; $('ckPromo').focus(); });
+
+const err = (id, msg) => { $(id).setAttribute('aria-invalid', msg ? 'true' : 'false'); form.querySelector(`[data-for="${id}"]`).textContent = msg || ''; return !msg; };
+const clean = s => s.replace(/[<>&"]/g, '');
+// Clear a field's error as soon as the person edits it.
+['ckName', 'ckEmail', 'ckPhone'].forEach(id => $(id).addEventListener('input', () => err(id, '')));
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('ckName').value.trim(), email = $('ckEmail').value.trim();
+  const phone = $('ckPhone').value.replace(/[\s-]/g, '').replace(/^\+?88/, '');
+  const ok = [
+    err('ckName', name.length < 2 ? 'Enter your full name.' : ''),
+    err('ckEmail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : 'Enter a valid email.'),
+    err('ckPhone', /^01[3-9]\d{8}$/.test(phone) ? '' : 'Enter an 11-digit Bangladeshi number, like 01712345678.'),
+  ].every(Boolean);
+  if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
+  const promo = $('ckPromo').value.trim();
+  // TODO(payments): hand off to the payment gateway here once a merchant account is connected.
+  const rows = [['Plan', sel.dataset.name], ['Amount', `৳${fmt(sel.dataset.price)} ${sel.dataset.per}`], ['Name', name], ['Email', email], ['Mobile', phone]];
+  if (promo) rows.push(['Promo code', promo]);
+  $('ckSum').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${clean(v)}</dd>`).join('');
+  $('ckMail').href = `mailto:incognitoshimul@gmail.com?subject=${encodeURIComponent(`Stashbar ${sel.dataset.name} order (BDT)`)}&body=${encodeURIComponent(rows.map(([k, v]) => `${k}: ${v}`).join('\n'))}`;
+  form.hidden = true; done.classList.add('on');
+});
+$('toUsd').addEventListener('click', () => { try { localStorage.setItem('sb_currency', 'USD'); } catch (e) {} });
+</script>
+</body>
+</html>
