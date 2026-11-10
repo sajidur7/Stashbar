@@ -41,6 +41,9 @@ def main():
     for name in ["pin-mark-ink"]:
         svg = open(os.path.join(BRAND, name + ".svg")).read()
         cairosvg.svg2pdf(bytestring=svg.encode(), write_to=os.path.join(APP_RES, name + ".pdf"))
+    # Menu-bar variant: thinner strokes so it sits with the system's 16pt template icons.
+    mb = open(os.path.join(BRAND, "pin-mark-ink.svg")).read().replace('stroke-width="7"', 'stroke-width="5.2"')
+    cairosvg.svg2pdf(bytestring=mb.encode(), write_to=os.path.join(APP_RES, "pin-mark-menubar.pdf"))
     for name in ["app-icon-accent", "app-icon-dark", "app-icon-light"]:
         svg = open(os.path.join(BRAND, name + ".svg")).read()
         cairosvg.svg2pdf(bytestring=svg.encode(), write_to=os.path.join(APP_RES, name + ".pdf"))

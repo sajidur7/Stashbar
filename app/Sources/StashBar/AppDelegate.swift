@@ -73,8 +73,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSM
     private func setupStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         guard let button = statusItem.button else { return }
-        let img = IconCache.image("pin-mark-ink")?.copy() as? NSImage
-        img?.size = NSSize(width: 18, height: 18)
+        // Thinner menu-bar variant at 15pt so it matches the system's template icons.
+        let img = (IconCache.image("pin-mark-menubar") ?? IconCache.image("pin-mark-ink"))?.copy() as? NSImage
+        img?.size = NSSize(width: 15, height: 15)
         img?.isTemplate = true
         button.image = img
         button.imagePosition = .imageLeading
