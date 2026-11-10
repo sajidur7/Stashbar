@@ -92,10 +92,10 @@ if (heroPin && heroStage && heroTop) {
     const radius = heroLerp(0, 18, e);
 
     heroStage.style.position = 'fixed';
-    heroStage.style.top = stageTop.toFixed(2) + 'px';
-    heroStage.style.left = left.toFixed(2) + 'px';
-    heroStage.style.width = w.toFixed(2) + 'px';
-    heroStage.style.height = h.toFixed(2) + 'px';
+    heroStage.style.top = Math.round(stageTop) + 'px';
+    heroStage.style.left = Math.round(left) + 'px';
+    heroStage.style.width = Math.round(w) + 'px'; // whole pixels: no text shimmer while resizing
+    heroStage.style.height = Math.round(h) + 'px';
     heroStage.style.borderRadius = radius.toFixed(2) + 'px';
     heroStage.style.zIndex = '45';
 
@@ -120,7 +120,7 @@ if (heroPin && heroStage && heroTop) {
     heroLastTs = now;
 
     targetP = heroDwell > 0 ? Math.min(Math.max(window.scrollY / heroDwell, 0), 1) : 1;
-    const alpha = 1 - Math.exp(-dt * 0.018);
+    const alpha = 1 - Math.exp(-dt * 0.013); // softer follow (~0.25s)
     smoothP += (targetP - smoothP) * alpha;
 
     if (Math.abs(targetP - smoothP) < 0.0008) {
@@ -1350,3 +1350,45 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
     });
   }
 }
+
+// ---- Smooth wheel scrolling (desktop mice/trackpads), like Lenis "smoothWheel" ----
+// Keyboard, scrollbar and touch scrolling stay native. Off with Reduce Motion.
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(pointer: coarse)').matches) return;
+  let target = window.scrollY, current = window.scrollY, raf = 0, last = 0, animating = false;
+  const maxY = () => document.documentElement.scrollHeight - window.innerHeight;
+  // Let inner scroll areas (popover lists, text boxes, code blocks) scroll themselves.
+  const innerCanScroll = (el, dy) => {
+    for (; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+      const oy = getComputedStyle(el).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && el.scrollHeight > el.clientHeight + 1) {
+        if (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true;
+      }
+    }
+    return false;
+  };
+  const step = now => {
+    const dt = last ? Math.min(now - last, 64) : 16.7;
+    last = now;
+    current += (target - current) * (1 - Math.exp(-dt * 0.011)); // ~0.3s glide
+    if (Math.abs(target - current) < 0.5) current = target;
+    window.scrollTo({ top: current, behavior: 'instant' });
+    if (current !== target) { raf = requestAnimationFrame(step); } else { raf = 0; animating = false; }
+  };
+  window.addEventListener('wheel', e => {
+    if (e.ctrlKey || e.defaultPrevented) return;                 // pinch-zoom / handled elsewhere
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;           // horizontal swipes stay native
+    if (innerCanScroll(e.target, e.deltaY)) return;
+    e.preventDefault();
+    const unit = e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1;
+    if (!animating) { current = window.scrollY; target = window.scrollY; animating = true; }
+    target = Math.max(0, Math.min(maxY(), target + e.deltaY * unit));
+    if (!raf) { last = 0; raf = requestAnimationFrame(step); }
+  }, { passive: false });
+  // Any other scroll (keyboard, scrollbar, anchor links) resets the glide.
+  window.addEventListener('scroll', () => { if (!animating) { current = target = window.scrollY; } }, { passive: true });
+  ['keydown', 'mousedown', 'touchstart'].forEach(t => window.addEventListener(t, () => {
+    if (animating) { cancelAnimationFrame(raf); raf = 0; animating = false; current = target = window.scrollY; }
+  }, { passive: true }));
+})();
