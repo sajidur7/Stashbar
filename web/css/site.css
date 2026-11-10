@@ -1724,3 +1724,10 @@ body{overflow-x:clip}
 .pr-feats img{flex:none;opacity:.85}
 .pr-popular .pr-feats img{filter:invert(1)}
 @media (max-width:1000px){.pr-grid{grid-template-columns:1fr;max-width:460px}}
+
+/* Pricing currency switch (USD by default, BDT for Bangladesh) */
+.pr-currency{display:flex;justify-content:center;align-items:center;gap:8px;margin:32px auto 0;font-size:15px;color:var(--muted)}
+.pr-currency button{border:0;background:none;padding:0;font:500 15px var(--font);color:var(--ink);cursor:pointer;
+  text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+.pr-currency button:hover{text-decoration-color:var(--ink)}
+.pr-taka{display:inline-block;height:.72em;width:auto;margin-right:.08em;vertical-align:baseline}

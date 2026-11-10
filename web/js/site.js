@@ -1063,10 +1063,13 @@ if (wfShowcase) {
       pin.classList.remove('is-pinned');
       const pinH = pin.offsetHeight;
       const vh = window.innerHeight;
-      // Pin only when the whole block fits on screen and motion is allowed.
-      wfScrollMode = !reduceMotion && window.innerWidth > 900 && pinH + navOffset() + 24 <= vh;
+      // Scroll-driven on any desktop-width window (also with Reduce Motion: it follows
+      // the user's own scrolling, it doesn't auto-play). Phones keep the auto-advance.
+      wfScrollMode = window.innerWidth > 900;
       if (!wfScrollMode) { startWfLoop(); return; }
+      // Centre the block; if it's taller than the window, pin it just under the header.
       pinTop = Math.max(navOffset(), Math.round((vh - pinH) / 2));
+      if (pinH + pinTop > vh) pinTop = navOffset();
       dist = Math.round(vh * STEP_VH * wfItems.length);
       track.style.height = (pinH + dist) + 'px';
       pin.style.top = pinTop + 'px';
@@ -1265,5 +1268,35 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
       // The hero resizes the page after load; land on pricing once layout has settled.
       window.addEventListener('load', () => setTimeout(() => goToPricing(false), 60));
     }
+  }
+}
+
+// ---- Pricing currency: USD by default, BDT for visitors in Bangladesh (remembered per browser) ----
+{
+  const btn = document.getElementById('prCurBtn');
+  const q = document.getElementById('prCurQ');
+  if (btn && q) {
+    const prices = document.querySelectorAll('#pricing [data-usd]');
+    const apply = cur => {
+      prices.forEach(el => {
+        if (cur === 'BDT') {
+          // The site font has no ৳ glyph, so draw it as an SVG (outline from Noto Sans Bengali, OFL).
+          el.innerHTML = '<svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>' + el.dataset.bdt.replace('৳', '');
+        } else {
+          el.textContent = el.dataset.usd;
+        }
+      });
+      q.textContent = cur === 'BDT' ? 'Outside Bangladesh?' : 'In Bangladesh?';
+      btn.textContent = cur === 'BDT' ? 'Show prices in USD' : 'Show prices in BDT';
+      btn.dataset.cur = cur;
+    };
+    let saved = 'USD';
+    try { saved = localStorage.getItem('sb_currency') === 'BDT' ? 'BDT' : 'USD'; } catch (e) {}
+    apply(saved);
+    btn.addEventListener('click', () => {
+      const next = btn.dataset.cur === 'BDT' ? 'USD' : 'BDT';
+      apply(next);
+      try { localStorage.setItem('sb_currency', next); } catch (e) {}
+    });
   }
 }
