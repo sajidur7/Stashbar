@@ -57,8 +57,8 @@ struct CanvasSidebar: View {
         VStack(alignment: .leading, spacing: 22) {
             TitlebarSpacer()
             HStack(spacing: 10) {
-                PinMark(size: 20, color: .white)
-                Text("Stashbar").heading(18).foregroundColor(.white)
+                PinMark(size: 20, color: Tok.sidebarText)
+                Text("Stashbar").heading(18).foregroundColor(Tok.sidebarText)
             }
             .padding(.horizontal, 6)
 
@@ -70,9 +70,9 @@ struct CanvasSidebar: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                SectionLabel(text: "Tags", color: Palette.mutedOnDark).padding(.horizontal, 12).padding(.bottom, 6)
+                SectionLabel(text: "Tags", color: Tok.sidebarMuted).padding(.horizontal, 12).padding(.bottom, 6)
                 if store.tags.isEmpty {
-                    Text("Tags appear here once you add them.").font(13).foregroundColor(Palette.mutedOnDark)
+                    Text("Tags appear here once you add them.").font(13).foregroundColor(Tok.sidebarMuted)
                         .padding(.horizontal, 12).fixedSize(horizontal: false, vertical: true)
                 } else {
                     ScrollView {
@@ -91,7 +91,7 @@ struct CanvasSidebar: View {
         .padding(.horizontal, 12)
         .padding(.bottom, 16)
         .frame(maxHeight: .infinity)
-        .background(Palette.charcoal)
+        .background(Tok.sidebarBg)
     }
 
     private func navRow(_ v: CanvasView, icon: String, count: Int) -> some View {
@@ -101,10 +101,10 @@ struct CanvasSidebar: View {
             nav.detailID = nil
         } label: {
             HStack(spacing: 10) {
-                Icon(name: icon, size: 15, color: on ? Palette.ink : .white)
-                Text(v.title).font(13, on ? .medium : .regular).foregroundColor(on ? Palette.ink : .white)
+                Icon(name: icon, size: 15, color: on ? Palette.ink : Tok.sidebarText)
+                Text(v.title).font(13, on ? .medium : .regular).foregroundColor(on ? Palette.ink : Tok.sidebarText)
                 Spacer()
-                Text("\(count)").font(12).foregroundColor(on ? Palette.ink : .white).opacity(0.7)
+                Text("\(count)").font(12).foregroundColor(on ? Palette.ink : Tok.sidebarText).opacity(0.7)
             }
             .padding(.horizontal, 12)
             .frame(height: 34)
@@ -121,10 +121,10 @@ struct CanvasSidebar: View {
             nav.detailID = nil
         } label: {
             HStack(spacing: 10) {
-                Icon(name: "hash", size: 13, color: on ? Palette.ink : .white).opacity(on ? 1 : 0.6)
-                Text(tag).font(13).foregroundColor(on ? Palette.ink : .white).lineLimit(1)
+                Icon(name: "hash", size: 13, color: on ? Palette.ink : Tok.sidebarText).opacity(on ? 1 : 0.6)
+                Text(tag).font(13).foregroundColor(on ? Palette.ink : Tok.sidebarText).lineLimit(1)
                 Spacer()
-                Text("\(count)").font(12).foregroundColor(on ? Palette.ink : Palette.mutedOnDark)
+                Text("\(count)").font(12).foregroundColor(on ? Palette.ink : Tok.sidebarMuted)
             }
             .padding(.horizontal, 12)
             .frame(height: 30)
@@ -140,15 +140,15 @@ struct CanvasSidebar: View {
                 HStack(spacing: 10) {
                     Avatar(account: a, size: 30)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text(a.name.isEmpty ? a.email : a.name).font(13).foregroundColor(.white).lineLimit(1)
+                        Text(a.name.isEmpty ? a.email : a.name).font(13).foregroundColor(Tok.sidebarText).lineLimit(1)
                         Text(store.syncLabel.lowercased().replacingOccurrences(of: "synced ", with: "synced · "))
-                            .font(12).foregroundColor(Palette.mutedOnDark).lineLimit(1).truncationMode(.tail)
+                            .font(12).foregroundColor(Tok.sidebarMuted).lineLimit(1).truncationMode(.tail)
                     }
                     Spacer(minLength: 0)
-                    Icon(name: "settings-2", size: 14, color: Palette.mutedOnDark)
+                    Icon(name: "settings-2", size: 14, color: Tok.sidebarMuted)
                 }
                 .padding(10)
-                .background(RoundedRectangle(cornerRadius: Radius.control).fill(Palette.graphite))
+                .background(RoundedRectangle(cornerRadius: Radius.control).fill(Tok.sidebarCard))
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -158,19 +158,19 @@ struct CanvasSidebar: View {
                 HStack(spacing: 10) {
                     Avatar(account: nil, size: 30)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Guest").font(13).foregroundColor(.white)
-                        Text("this Mac only").font(12).foregroundColor(Palette.mutedOnDark)
+                        Text("Guest").font(13).foregroundColor(Tok.sidebarText)
+                        Text("this Mac only").font(12).foregroundColor(Tok.sidebarMuted)
                     }
                     Spacer()
                     Button { Windows.shared.showSettings(section: .general, from: .links) } label: {
-                        Icon(name: "settings-2", size: 14, color: Palette.mutedOnDark)
+                        Icon(name: "settings-2", size: 14, color: Tok.sidebarMuted)
                     }.buttonStyle(.plain).help("Settings")
                 }
                 Button("Sign in to back up") { Windows.shared.showSettings(section: .account, from: .links) }
                     .buttonStyle(PrimaryButtonStyle(height: 34, fullWidth: true))
             }
             .padding(14)
-            .background(RoundedRectangle(cornerRadius: Radius.card).fill(Palette.graphite))
+            .background(RoundedRectangle(cornerRadius: Radius.card).fill(Tok.sidebarCard))
         }
     }
 }

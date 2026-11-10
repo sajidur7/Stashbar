@@ -69,12 +69,12 @@ struct SettingsSidebar: View {
             TitlebarSpacer()
             Button { Windows.shared.closeSettingsAndGoBack() } label: {
                 HStack(spacing: 6) {
-                    Icon(name: "arrow-left", size: 15, color: .white)
-                    Text(backLabel).font(14, .medium).foregroundColor(.white)
+                    Icon(name: "arrow-left", size: 15, color: Tok.sidebarText)
+                    Text(backLabel).font(14, .medium).foregroundColor(Tok.sidebarText)
                     Spacer()
-                    Text("esc").font(12).foregroundColor(Palette.mutedOnDark)
+                    Text("esc").font(12).foregroundColor(Tok.sidebarMuted)
                         .padding(.horizontal, 6).frame(height: 22)
-                        .overlay(RoundedRectangle(cornerRadius: Radius.small).strokeBorder(Palette.graphiteLine, lineWidth: 1))
+                        .overlay(RoundedRectangle(cornerRadius: Radius.small).strokeBorder(Tok.sidebarLine, lineWidth: 1))
                 }
                 .padding(.leading, 6).padding(.trailing, 8).frame(height: 36)
                 .contentShape(Rectangle())
@@ -91,14 +91,14 @@ struct SettingsSidebar: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text(store.account.map { $0.name.isEmpty ? $0.email : $0.name } ?? "Guest")
-                            .font(13).foregroundColor(.white).lineLimit(1)
-                        Text(store.account?.email ?? "this Mac only").font(12).foregroundColor(Palette.mutedOnDark)
+                            .font(13).foregroundColor(Tok.sidebarText).lineLimit(1)
+                        Text(store.account?.email ?? "this Mac only").font(12).foregroundColor(Tok.sidebarMuted)
                             .lineLimit(1).truncationMode(.tail)
                     }
                     Spacer(minLength: 0)
                 }
                 .padding(12)
-                .background(RoundedRectangle(cornerRadius: Radius.control).fill(Palette.graphite))
+                .background(RoundedRectangle(cornerRadius: Radius.control).fill(Tok.sidebarCard))
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -108,8 +108,8 @@ struct SettingsSidebar: View {
                     let on = nav.section == s
                     Button { nav.section = s } label: {
                         HStack(spacing: 10) {
-                            Icon(name: s.icon, size: 15, color: on ? Palette.ink : .white)
-                            Text(s.title).font(13, on ? .medium : .regular).foregroundColor(on ? Palette.ink : .white)
+                            Icon(name: s.icon, size: 15, color: on ? Palette.ink : Tok.sidebarText)
+                            Text(s.title).font(13, on ? .medium : .regular).foregroundColor(on ? Palette.ink : Tok.sidebarText)
                             Spacer()
                             if s == .account && store.isGuest {
                                 Circle().fill(Palette.accent).frame(width: 7, height: 7)
@@ -124,14 +124,14 @@ struct SettingsSidebar: View {
             }
             Spacer()
             HStack(spacing: 8) {
-                PinMark(size: 13, color: Palette.mutedOnDark)
-                Text("Stashbar \(Config.appVersion)").font(12).foregroundColor(Palette.mutedOnDark)
+                PinMark(size: 13, color: Tok.sidebarMuted)
+                Text("Stashbar \(Config.appVersion)").font(12).foregroundColor(Tok.sidebarMuted)
             }
             .padding(.horizontal, 12)
         }
         .padding(.horizontal, 12).padding(.bottom, 16)
         .frame(maxHeight: .infinity)
-        .background(Palette.charcoal)
+        .background(Tok.sidebarBg)
     }
 
     private var backLabel: String {

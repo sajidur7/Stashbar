@@ -28,6 +28,13 @@ enum Tok {
     static let muted = dyn(light: 0x6D6C6B, dark: 0xA3A2A1)
     static let popoverBg = dyn(light: 0xFFFFFF, dark: 0x1A1919)
 
+    // Sidebars (canvas + Settings): light beige in light mode, charcoal in dark mode.
+    static let sidebarBg = dyn(light: 0xF4F2F0, dark: 0x1A1919)
+    static let sidebarText = dyn(light: 0x0C0A08, dark: 0xFFFFFF)
+    static let sidebarMuted = dyn(light: 0x6D6C6B, dark: 0xA3A2A1)
+    static let sidebarCard = dyn(light: 0xFFFFFF, dark: 0x2A2828)
+    static let sidebarLine = dyn(light: 0xEBE6DF, dark: 0x3D3B3A)
+
     static func dyn(light: UInt32, dark: UInt32) -> Color {
         Color(nsColor: NSColor(name: nil) { appearance in
             let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
