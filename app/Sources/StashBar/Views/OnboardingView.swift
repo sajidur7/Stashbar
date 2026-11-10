@@ -348,15 +348,15 @@ struct ShortcutStep: View {
                     .padding(.leading, 6)
                     Spacer(minLength: 4)
                     if !recording.isRecording {
-                        ShortcutPicker(recording: recording) {
-                            // Plain word with a thick accent underline set a little below the text, like the site's links.
-                            VStack(alignment: .leading, spacing: 3) {
+                        // Plain word with a thick accent underline a little below it. The bar sits outside the
+                        // menu because a macOS menu label only draws its text, never shapes.
+                        VStack(alignment: .leading, spacing: 2) {
+                            ShortcutPicker(recording: recording) {
                                 Text("Change").font(13).foregroundColor(Tok.text)
-                                Rectangle().fill(Palette.accent).frame(height: 2)
                             }
-                            .fixedSize()
-                            .contentShape(Rectangle())
+                            Rectangle().fill(Palette.accent).frame(height: 2).allowsHitTesting(false)
                         }
+                        .fixedSize()
                     }
                 }
                 if recording.isRecording { RecordingCap(recording: recording) }
