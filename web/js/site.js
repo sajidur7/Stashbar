@@ -92,10 +92,10 @@ if (heroPin && heroStage && heroTop) {
     const radius = heroLerp(0, 18, e);
 
     heroStage.style.position = 'fixed';
-    heroStage.style.top = Math.round(stageTop) + 'px';
-    heroStage.style.left = Math.round(left) + 'px';
-    heroStage.style.width = Math.round(w) + 'px'; // whole pixels: no text shimmer while resizing
-    heroStage.style.height = Math.round(h) + 'px';
+    heroStage.style.top = stageTop.toFixed(2) + 'px';
+    heroStage.style.left = left.toFixed(2) + 'px';
+    heroStage.style.width = w.toFixed(2) + 'px';
+    heroStage.style.height = h.toFixed(2) + 'px';
     heroStage.style.borderRadius = radius.toFixed(2) + 'px';
     heroStage.style.zIndex = '45';
 
@@ -137,15 +137,15 @@ if (heroPin && heroStage && heroTop) {
     }
   };
 
+  // Render in the same frame as the scroll (no second easing layer, no one-frame lag):
+  // the pinned desktop moves exactly with the page, so it can't shake. The easing comes
+  // from smooth wheel scrolling (and native trackpad momentum).
   const kickHeroLoop = () => {
     if (reducedMotion.matches || mobileQuery.matches) return;
     targetP = heroDwell > 0 ? Math.min(Math.max(window.scrollY / heroDwell, 0), 1) : 1;
-    if (!heroRaf) {
-      heroLastTs = 0;
-      heroRaf = requestAnimationFrame(stepHero);
-    } else if (smoothP >= 0.9985 && window.scrollY > heroDwell) {
-      renderHeroFrame(smoothP);
-    }
+    if (heroRaf) { cancelAnimationFrame(heroRaf); heroRaf = 0; }
+    smoothP = targetP;
+    renderHeroFrame(smoothP);
   };
 
   const measureHeroRest = () => {

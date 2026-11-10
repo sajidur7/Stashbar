@@ -34,7 +34,7 @@
 .fb-note{font-size:13px;color:var(--muted);margin:0}
 .fb-side{display:flex;flex-direction:column;gap:12px;margin-top:118px}
 .side{padding:22px;border-radius:var(--r-l);display:flex;flex-direction:column;justify-content:center;gap:10px;text-decoration:none;color:inherit}
-.side-dark{background:var(--charcoal);color:#fff}
+.side-dark{background:var(--charcoal);color:#fff;justify-content:space-between}
 .side-dark b{font-weight:500;font-size:36px;letter-spacing:-.04em;color:var(--accent);line-height:1}
 .side-dark span{font-size:13px;color:var(--muted-dark)}
 .side-beige{background:var(--beige);transition:background-color .15s}
@@ -201,7 +201,7 @@
 </div>
 
 <script type="module">
-import '/js/site.js?v=42';
+import '/js/site.js?v=44';
 const TO = 'incognitoshimul@gmail.com';
 // Line the side cards up with the top of the "What happened?" box.
 const side = document.querySelector('.fb-side'), box = document.getElementById('msg');
