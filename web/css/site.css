@@ -81,7 +81,7 @@ button,input,textarea{font:inherit;color:inherit}
   transition:color .15s ease;
 }
 .nav-links > a:hover{color:var(--ink)}
-.nav-links > a[aria-current]{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:6px}
+.nav-links > a[aria-current]{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:8px}
 
 .nav-end{justify-self:end;display:flex;align-items:center}
 .nav-get-btn{
