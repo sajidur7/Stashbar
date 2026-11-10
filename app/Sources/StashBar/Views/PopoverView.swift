@@ -36,7 +36,7 @@ struct PopoverView: View {
         }
         if let c = store.clipboardLink {
             ClipboardCard(link: c, onStash: { store.stash(c) }, onDismiss: { store.dismissClipboard() })
-                .padding(10)
+                .padding(.bottom, 10)
         }
         HStack(spacing: 8) {
             SearchField(placeholder: store.active.isEmpty ? "Search stash" : "Search \(store.active.count) links",
@@ -126,8 +126,12 @@ struct ClipboardCard: View {
     var onStash: () -> Void
     var onDismiss: () -> Void
 
+    // Full-width dark band. Text lines up with the "RECENT" label and link titles (18pt);
+    // the button row uses the search row's geometry (10pt sides, 8pt gap, 56pt trailing button)
+    // so "Stash it" sits over the search field and ✕ over the + button.
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 Icon(name: SiteLogo.icon(for: link.domain), size: 12, color: .white)
                 Text("ON YOUR CLIPBOARD").font(12).foregroundColor(Palette.mutedOnDark)
@@ -140,6 +144,8 @@ struct ClipboardCard: View {
             }
             Text(link.guessedTitle).heading(18).foregroundColor(.white).lineLimit(2)
             Text(link.domain + Self.pathHint(link.url)).font(12).foregroundColor(Palette.mutedOnDark).lineLimit(1)
+            }
+            .padding(.horizontal, 18)
             HStack(spacing: 8) {
                 Button(action: onStash) {
                     HStack(spacing: 8) {
@@ -152,7 +158,7 @@ struct ClipboardCard: View {
                 .keyboardShortcut(.return, modifiers: [])
                 Button(action: onDismiss) {
                     Icon(name: "x", size: 15, color: .white)
-                        .frame(width: 40, height: 40)
+                        .frame(width: 56, height: 40)
                         .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Palette.muted, lineWidth: 1))
                         .contentShape(Rectangle())
                 }
@@ -161,9 +167,12 @@ struct ClipboardCard: View {
                 .keyboardShortcut(.cancelAction)
                 .accessibilityLabel("Dismiss")
             }
+            .padding(.horizontal, 10)
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: Radius.card).fill(Palette.charcoal))
+        .padding(.top, 18)
+        .padding(.bottom, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Palette.charcoal)
     }
 
     static func pathHint(_ url: String) -> String {
