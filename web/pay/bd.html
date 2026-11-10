@@ -33,12 +33,6 @@
 .bd-methods{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px;padding:16px;border-radius:var(--r-l);background:var(--beige)}
 .bd-methods span{font-size:13px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line)}
 .bd-methods em{font-style:normal;font-size:13px;color:var(--muted);margin-right:4px}
-.bd-note{margin:16px 0 0;font-size:14px;color:var(--muted)}
-.bd-note a{color:var(--ink)}
-.bd-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
-.bd-steps .n{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.bd-steps h3{margin:8px 0;font-weight:500;font-size:18px;letter-spacing:-.02em}
-.bd-steps p{margin:0;font-size:15px;line-height:1.6;color:var(--muted)}
 .bd-foot{margin:48px 0 0;text-align:center;font-size:15px;color:var(--muted)}
 .bd-foot a{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
 .ck{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(12,10,8,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
@@ -59,13 +53,11 @@
 .ck-promo-link{align-self:flex-start;background:none;border:0;padding:0;font:500 14px var(--font);color:var(--ink);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
 .ck-go{height:54px;border:0;border-radius:var(--r-c);background:var(--ink);color:#fff;font:500 16px var(--font);cursor:pointer;margin-top:4px}
 .ck-go:hover{background:var(--graphite)}
-.ck-done{display:none;flex-direction:column;gap:14px}
-.ck-done.on{display:flex}
-.ck-sum{margin:0;border-radius:var(--r-l);background:var(--beige);padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
-.ck-sum dt{color:var(--muted)}.ck-sum dd{margin:0;text-align:right;overflow-wrap:anywhere}
-.ck-mail{display:flex;align-items:center;justify-content:center;height:52px;border-radius:var(--r-c);background:var(--accent);color:var(--ink);font-weight:500;text-decoration:none}
+.ck-fail{margin:0;padding:12px 14px;border-radius:var(--r-m);background:#FDECEA;color:#9A1C12;font-size:14px;line-height:1.5}
+.ck-go[disabled]{opacity:.6;cursor:progress}
+.ck-secure{margin:-4px 0 0;font-size:13px;color:var(--muted);text-align:center}
 .pr-taka{display:inline-block;height:.72em;width:auto;margin-right:.08em;vertical-align:baseline}
-@media (max-width:760px){.bd{padding:40px 16px 24px}.bd h1{font-size:40px}.bd-plans,.bd-steps{grid-template-columns:1fr}.ck-card{padding:24px}}
+@media (max-width:760px){.bd{padding:40px 16px 24px}.bd h1{font-size:40px}.bd-plans{grid-template-columns:1fr}.ck-card{padding:24px}}
 </style>
 </head>
 <body>
@@ -108,13 +100,6 @@
 
   <button type="button" class="bd-cta" id="bdCta">Continue with Lifetime · ৳999</button>
   <div class="bd-methods" aria-label="Payment methods"><em>Pay with</em><span>Visa</span><span>Mastercard</span><span>bKash</span><span>Nagad</span><span>Rocket</span><span>+ others</span></div>
-  <p class="bd-note">Prices are in Bangladeshi taka and include everything. Same plan as the USD prices. <a href="/privacy">Privacy</a></p>
-
-  <div class="bd-steps">
-    <div><span class="n">01</span><h3>Pay in taka</h3><p>On the secure payment page, by card or mobile banking. On a computer, scan the QR code to pay from your phone.</p></div>
-    <div><span class="n">02</span><h3>Keep your reference</h3><p>Your receipt shows a reference number. If anything goes wrong, it’s all we need to find your payment.</p></div>
-    <div><span class="n">03</span><h3>Unlocks in the app</h3><p>Sign in to Stashbar with the same email. Unlimited links and sync switch on automatically.</p></div>
-  </div>
 
   <p class="bd-foot">Already paid? <a href="/feedback">Get help with your plan</a></p>
   <p class="bd-foot" style="margin-top:10px">Not in Bangladesh? <a href="/#pricing" id="toUsd">See USD prices</a></p>
@@ -132,14 +117,10 @@
       <label>Mobile number<input id="ckPhone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="01712345678" required><span class="ck-err" data-for="ckPhone"></span></label>
       <button type="button" class="ck-promo-link" id="ckPromoLink">Have a promo code?</button>
       <label id="ckPromoWrap" hidden>Promo code<input id="ckPromo" autocomplete="off"></label>
-      <button type="submit" class="ck-go">Continue</button>
+      <p class="ck-fail" id="ckFail" role="alert" hidden></p>
+      <button type="submit" class="ck-go" id="ckGo">Continue to payment</button>
+      <p class="ck-secure">You’ll pay on SSLCommerz’s secure page by card, bKash, Nagad, Rocket or net banking.</p>
     </form>
-    <div class="ck-done" id="ckDone" role="status">
-      <p style="color:var(--ink);font-size:17px;font-weight:500">Checkout opens here soon.</p>
-      <p>Online payment isn’t switched on yet, so nothing has been charged. Send us your order and we’ll reply with how to pay, or email you the moment checkout opens.</p>
-      <dl class="ck-sum" id="ckSum"></dl>
-      <a class="ck-mail" id="ckMail" href="#">Email my order</a>
-    </div>
   </div>
 </div>
 
@@ -223,13 +204,13 @@ const pick = p => {
 plans.forEach(p => p.addEventListener('click', () => pick(p)));
 pick(sel);
 
-const ck = document.getElementById('ck'), form = document.getElementById('ckForm'), done = document.getElementById('ckDone');
+const ck = document.getElementById('ck'), form = document.getElementById('ckForm');
 const $ = id => document.getElementById(id);
 const open = () => {
   $('ckTitle').textContent = `Pay in taka · Stashbar ${sel.dataset.name}`;
   $('ckPrice').innerHTML = TAKA + fmt(sel.dataset.price);
   $('ckPer').textContent = sel.dataset.per;
-  form.hidden = false; done.classList.remove('on');
+  $('ckFail').hidden = true;
   ck.classList.add('on'); document.body.style.overflow = 'hidden';
   setTimeout(() => $('ckName').focus(), 30);
 };
@@ -241,10 +222,9 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && ck.classList.contai
 $('ckPromoLink').addEventListener('click', e => { e.currentTarget.hidden = true; $('ckPromoWrap').hidden = false; $('ckPromo').focus(); });
 
 const err = (id, msg) => { $(id).setAttribute('aria-invalid', msg ? 'true' : 'false'); form.querySelector(`[data-for="${id}"]`).textContent = msg || ''; return !msg; };
-const clean = s => s.replace(/[<>&"]/g, '');
 // Clear a field's error as soon as the person edits it.
 ['ckName', 'ckEmail', 'ckPhone'].forEach(id => $(id).addEventListener('input', () => err(id, '')));
-form.addEventListener('submit', e => {
+form.addEventListener('submit', async e => {
   e.preventDefault();
   const name = $('ckName').value.trim(), email = $('ckEmail').value.trim();
   const phone = $('ckPhone').value.replace(/[\s-]/g, '').replace(/^\+?88/, '');
@@ -254,13 +234,18 @@ form.addEventListener('submit', e => {
     err('ckPhone', /^01[3-9]\d{8}$/.test(phone) ? '' : 'Enter an 11-digit Bangladeshi number, like 01712345678.'),
   ].every(Boolean);
   if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
-  const promo = $('ckPromo').value.trim();
-  // TODO(payments): hand off to the payment gateway here once a merchant account is connected.
-  const rows = [['Plan', sel.dataset.name], ['Amount', `৳${fmt(sel.dataset.price)} ${sel.dataset.per}`], ['Name', name], ['Email', email], ['Mobile', phone]];
-  if (promo) rows.push(['Promo code', promo]);
-  $('ckSum').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${clean(v)}</dd>`).join('');
-  $('ckMail').href = `mailto:incognitoshimul@gmail.com?subject=${encodeURIComponent(`Stashbar ${sel.dataset.name} order (BDT)`)}&body=${encodeURIComponent(rows.map(([k, v]) => `${k}: ${v}`).join('\n'))}`;
-  form.hidden = true; done.classList.add('on');
+  const go = $('ckGo'), fail = $('ckFail');
+  go.disabled = true; go.textContent = 'Opening secure checkout…'; fail.hidden = true;
+  try {
+    const r = await fetch('/api/pay/init', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan: sel.dataset.plan, name, email, phone, promo: $('ckPromo').value.trim() }) });
+    const data = await r.json().catch(() => ({}));
+    if (r.ok && data.url) { location.href = data.url; return; }
+    fail.textContent = data.error || 'Checkout couldn’t open. Please try again in a minute.';
+  } catch (e) {
+    fail.textContent = 'You seem to be offline. Check your connection and try again.';
+  }
+  fail.hidden = false; go.disabled = false; go.textContent = 'Continue to payment';
 });
 $('toUsd').addEventListener('click', () => { try { localStorage.setItem('sb_currency', 'USD'); } catch (e) {} });
 </script>

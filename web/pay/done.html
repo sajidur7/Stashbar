@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment · Stashbar</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/site.css?v=45">
+<style>
+.pd{max-width:620px;margin:0 auto;padding:96px 24px 72px;text-align:center}
+.pd-ic{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;background:var(--accent);font-size:28px;color:var(--ink)}
+.pd[data-s="fail"] .pd-ic,.pd[data-s="cancel"] .pd-ic,.pd[data-s="check"] .pd-ic{background:var(--beige)}
+.pd h1{margin:0 0 14px;font-weight:500;font-size:44px;letter-spacing:-.04em;line-height:1.05}
+.pd p{margin:0 auto;max-width:480px;font-size:17px;line-height:1.6;color:var(--muted)}
+.pd-ref{display:inline-block;margin-top:22px;padding:10px 16px;border-radius:var(--r-m);background:var(--beige);font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.pd-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+@media (max-width:760px){.pd{padding:56px 16px 40px}.pd h1{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="nav-wrap">
+  <header class="nav">
+    <a class="brand" href="/">
+      <img src="/assets/brand/app-icon-accent.svg" width="24" height="24" alt="">
+      <span>Stashbar</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/#demo">Desktop</a>
+      <a href="/help">Help</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+    <div class="nav-end">
+      <a class="nav-price-btn" href="/#pricing">See pricing</a>
+      <a class="nav-get-btn" data-download href="#">Get Stashbar</a>
+    </div>
+  </header>
+</div>
+<main class="pd" id="pd" data-s="ok">
+  <div class="pd-ic" id="pdIc" aria-hidden="true">✓</div>
+  <h1 id="pdH">Payment received.</h1>
+  <p id="pdP">Thanks! Sign in to Stashbar with the same email you paid with and your plan switches on. A receipt is on its way.</p>
+  <span class="pd-ref" id="pdRef" hidden></span>
+  <div class="pd-actions" id="pdA">
+    <a class="btn btn-dark" data-download href="#">Download for Mac</a>
+    <a class="btn btn-outline" href="/feedback">Need help?</a>
+  </div>
+</main>
+
+<!-- Full-Bleed Unified Closing CTA + Footer over the Stashbar Fluted Cream & Lime BG -->
+<div class="closing-scene">
+  <img class="closing-bg" src="/assets/macos-day.webp?v=18" alt="" loading="lazy" decoding="async">
+  <div class="closing-top-fade" aria-hidden="true"></div>
+
+  <section class="closing-cta" aria-label="Download Stashbar" data-reveal>
+    <h2 class="closing-title" data-scroll-title>Stop losing the links<br>worth keeping.</h2>
+    <p class="closing-sub">Whether it’s an article, a GitHub repo, or a reference thread, Stashbar catches every link from your Mac menu bar, strips the trackers, and keeps it ready whenever you search.</p>
+    <div class="closing-actions">
+      <a class="btn btn-dark" data-download href="#">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="#ffffff" stroke-linejoin="round" stroke-width="1.5" d="M12 5.75c0-2 1.5-4 3.5-4c0 2-1.5 4-3.5 4Zm.5 2.34c-.515 0-.913-.164-1.359-.346c-.563-.232-1.202-.494-2.248-.494C7.023 7.25 4 8.75 4 12.75c0 4.652 3.105 9.5 5.105 9.5c.67 0 1.272-.263 1.849-.514c.527-.23 1.033-.45 1.546-.45s1.018.22 1.546.45c.577.251 1.18.514 1.85.514c1.392 0 3.061-2.35 4.104-5.35c-1.62-.68-2.662-2.282-2.662-4.15c0-1.629.866-2.71 2.162-3.5c-1-1.5-2.487-2-3.555-2c-1.046 0-1.685.262-2.248.494c-.446.182-.682.346-1.197.346Z"/></svg>
+        Download for Mac
+      </a>
+      <a class="btn btn-closing-light" href="/help">Keyboard shortcuts</a>
+    </div>
+    <span class="closing-meta" data-version>Free plan · macOS 13+ · Apple silicon &amp; Intel</span>
+  </section>
+
+  <footer class="closing-footer">
+    <div class="closing-foot-inner">
+      <div class="closing-foot-main">
+        <div class="closing-brand">
+          <a class="closing-brand-link" href="/">
+            <img src="/assets/brand/pin-mark-ink.svg" width="22" height="22" alt="">
+            <span>Stashbar</span>
+          </a>
+          <p>Every link you copy, saved and cleaned.<br>Local-first on macOS.</p>
+        </div>
+
+        <nav class="closing-cols" aria-label="Footer">
+          <div class="closing-col">
+            <h4>Product</h4>
+            <a data-download href="#">Download for Mac</a>
+            <a href="/#demo">Interactive demo</a>
+            <a href="/#features">Features</a>
+          </div>
+          <div class="closing-col">
+            <h4>Learn</h4>
+            <a href="/#how">How it works</a>
+            <a href="/help">Keyboard shortcuts</a>
+            <a href="/#faq">FAQ</a>
+          </div>
+          <div class="closing-col">
+            <h4>Project</h4>
+            <a href="/privacy">Privacy policy</a>
+            <a href="/help">Help &amp; support</a>
+            <a href="/feedback">Send feedback</a>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class="closing-bottom-bar">
+      <div class="closing-bottom-inner">
+        <span>© 2026 Stashbar. Built with care for macOS.</span>
+        <div class="closing-bottom-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/help">Help &amp; Support</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script type="module">
+import '/js/site.js?v=46';
+const q = new URLSearchParams(location.search), s = q.get('s') || 'fail', ref = (q.get('ref') || '').replace(/[^A-Za-z0-9_-]/g, '');
+const T = {
+  ok: ['✓', 'Payment received.', 'Thanks! Sign in to Stashbar with the same email you paid with and your plan switches on. A receipt is on its way.'],
+  fail: ['!', 'Payment didn’t go through.', 'Nothing was charged. You can try again with another card or mobile wallet.'],
+  cancel: ['×', 'Payment cancelled.', 'No problem, nothing was charged. Pick up where you left off whenever you’re ready.'],
+  check: ['…', 'We’re confirming your payment.', 'This can take a minute. If your plan doesn’t switch on soon, send us the reference below and we’ll sort it out.'],
+}[s] || null;
+const t = T || ['!', 'Payment didn’t go through.', 'Nothing was charged.'];
+const pd = document.getElementById('pd');
+pd.dataset.s = T ? s : 'fail';
+document.getElementById('pdIc').textContent = t[0];
+document.getElementById('pdH').textContent = t[1];
+document.getElementById('pdP').textContent = t[2];
+document.title = t[1] + ' · Stashbar';
+if (ref) { const r = document.getElementById('pdRef'); r.textContent = 'Reference ' + ref; r.hidden = false; }
+if (s === 'fail' || s === 'cancel') {
+  document.getElementById('pdA').innerHTML = '<a class="btn btn-dark" href="/pay/bd">Try again</a><a class="btn btn-outline" href="/feedback">Need help?</a>';
+}
+</script>
+</body>
+</html>

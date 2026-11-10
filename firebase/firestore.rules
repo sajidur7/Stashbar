@@ -25,6 +25,14 @@ service cloud.firestore {
       }
     }
 
+    // Paid plans, written only by the payment server (service account). A signed-in
+    // user may read the entitlement for their own verified email.
+    match /entitlements/{email} {
+      allow read: if request.auth != null && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() == email;
+      allow write: if false;
+    }
+
     // Everything else stays locked.
     match /{document=**} {
       allow read, write: if false;
