@@ -11,7 +11,7 @@ fetch('https://api.github.com/repos/sajidur7/Stashbar/releases/latest')
     const asset = (j.assets || []).find(a => a.name === 'Stashbar.dmg');
     const size = asset ? ' · ' + (asset.size / 1048576).toFixed(1) + ' MB' : '';
     document.querySelectorAll('[data-version]').forEach(el => {
-      el.textContent = 'Version ' + v + size + ' · macOS 13+ · Apple silicon & Intel';
+      el.textContent = '7-day free trial · Version ' + v + size + ' · macOS 13+';
     });
   })
   .catch(() => {});

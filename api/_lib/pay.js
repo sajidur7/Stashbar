@@ -8,8 +8,8 @@ const crypto = require('crypto');
 
 // Prices are decided here, on the server, so the browser can't change them.
 const PLANS = {
-  monthly: { name: 'Monthly', amount: 499, days: 30 },
-  lifetime: { name: 'Lifetime', amount: 999, days: null },
+  monthly: { name: 'Monthly', amount: { BDT: 499, USD: 4.99 }, days: 30 },
+  lifetime: { name: 'Lifetime', amount: { BDT: 999, USD: 9.99 }, days: null },
 };
 
 const gatewayHost = () => (process.env.SSLCZ_LIVE === '1' ? 'https://securepay.sslcommerz.com' : 'https://sandbox.sslcommerz.com');
@@ -36,11 +36,12 @@ async function validate(valId) {
   const v = await r.json();
   if (v.status !== 'VALID' && v.status !== 'VALIDATED') return null;
   const plan = PLANS[v.value_a];
-  if (!plan || v.currency_type !== 'BDT') return null;
+  const [cur, amt] = String(v.value_d || '').split(':'); // the currency and discounted amount we asked for, signed below
+  if (!plan || v.currency_type !== cur) return null;
   const paid = Number(v.currency_amount);
-  const expected = Number(v.value_d); // the discounted amount we asked for, signed below
+  const expected = Number(amt);
   if (!(paid >= expected - 0.01) || sign(`${v.tran_id}|${v.value_a}|${v.value_d}`) !== v.value_c) return null;
-  return { tranId: v.tran_id, plan: v.value_a, email: (v.value_b || '').toLowerCase(), amount: paid, valId, bankTranId: v.bank_tran_id || '', cardType: v.card_type || '' };
+  return { tranId: v.tran_id, plan: v.value_a, email: (v.value_b || '').toLowerCase(), amount: paid, currency: cur, valId, bankTranId: v.bank_tran_id || '', cardType: v.card_type || '' };
 }
 
 // HMAC so a tampered plan/amount in the round trip is detected.
@@ -77,7 +78,7 @@ async function recordPayment(p) {
   if (!process.env.FIREBASE_SERVICE_ACCOUNT) { console.warn('FIREBASE_SERVICE_ACCOUNT not set; payment not recorded', p.tranId); return; }
   const plan = PLANS[p.plan];
   const now = new Date();
-  await fsSet(`payments/${p.tranId}`, { ...p, provider: 'sslcommerz', currency: 'BDT', createdAt: now });
+  await fsSet(`payments/${p.tranId}`, { ...p, provider: 'sslcommerz', createdAt: now });
   await fsSet(`entitlements/${p.email.replace(/\//g, "_")}`, {
     plan: p.plan, email: p.email, tranId: p.tranId, updatedAt: now,
     expiresAt: plan.days ? new Date(now.getTime() + plan.days * 864e5) : null,

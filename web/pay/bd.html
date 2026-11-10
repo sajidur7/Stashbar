@@ -23,7 +23,7 @@
 .bd-plan[aria-checked="true"]{border:2px solid var(--ink);padding:23px;box-shadow:0 18px 40px -24px rgba(12,10,8,.3)}
 .bd-plan-top{display:flex;align-items:center;justify-content:space-between}
 .bd-plan-top b{font-weight:500;font-size:18px;letter-spacing:-.02em}
-.bd-tag{font-size:11px;letter-spacing:.12em;padding:5px 9px;border-radius:999px;text-transform:uppercase;background:var(--accent);color:var(--ink)}
+.bd-tag{font-size:12px;font-weight:500;padding:5px 10px;border-radius:var(--r-s);background:var(--accent);color:var(--ink)}
 .bd-price{display:flex;align-items:baseline;gap:8px}
 .bd-price b{font-weight:500;font-size:40px;letter-spacing:-.04em;line-height:1}
 .bd-price span{font-size:14px;color:var(--muted)}
@@ -55,6 +55,8 @@
 .ck-secure{margin:-4px 0 0;font-size:13px;color:var(--muted);text-align:center}
 .pr-taka{display:inline-block;height:.72em;width:auto;margin-right:.08em;vertical-align:baseline}
 @media (max-width:760px){.bd{padding:40px 16px 24px}.bd h1{font-size:40px}.bd-plans{grid-template-columns:1fr}.ck-card{padding:24px}}
+.bd-usd{margin-right:.06em}
+html[data-cur="USD"] .bd-flag{display:none}
 </style>
 </head>
 <body>
@@ -77,20 +79,20 @@
   </header>
 </div>
 <main class="bd">
-  <div class="bd-eyebrow"><span class="bd-flag" aria-hidden="true"></span>Bangladesh · Pay in taka</div>
-  <h1>Get Stashbar in taka</h1>
-  <p class="bd-lead">Pay in BDT by card or mobile banking. Your plan unlocks on your Stashbar account once the payment is confirmed, and the receipt arrives by email.</p>
+  <div class="bd-eyebrow"><span class="bd-flag" aria-hidden="true"></span><span id="bdEye">Bangladesh · Pay in taka</span></div>
+  <h1 id="bdH1">Get Stashbar in taka</h1>
+  <p class="bd-lead" id="bdLead">Pay in BDT by card or mobile banking. Your plan unlocks on your Stashbar account once the payment is confirmed, and the receipt arrives by email.</p>
 
   <h2 class="bd-h">Choose a plan</h2>
   <div class="bd-plans" role="radiogroup" aria-label="Plan">
-    <button type="button" class="bd-plan" role="radio" aria-checked="false" data-plan="monthly" data-name="Monthly" data-price="499" data-per="/ month">
+    <button type="button" class="bd-plan" role="radio" aria-checked="false" data-plan="monthly" data-name="Monthly" data-bdt="499" data-usd="4.99" data-per="/ month">
       <span class="bd-plan-top"><b>Monthly</b></span>
-      <span class="bd-price"><b><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>499</b><span>/ month</span></span>
+      <span class="bd-price"><b class="bd-amt"><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>499</b><span>/ month</span></span>
       <p>Unlimited links, kept forever, synced across your Macs. Cancel anytime.</p>
     </button>
-    <button type="button" class="bd-plan" role="radio" aria-checked="true" data-plan="lifetime" data-name="Lifetime" data-price="999" data-per="once">
+    <button type="button" class="bd-plan" role="radio" aria-checked="true" data-plan="lifetime" data-name="Lifetime" data-bdt="999" data-usd="9.99" data-per="once">
       <span class="bd-plan-top"><b>Lifetime</b><span class="bd-tag">Most popular</span></span>
-      <span class="bd-price"><b><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>999</b><span>once</span></span>
+      <span class="bd-price"><b class="bd-amt"><svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>999</b><span>once</span></span>
       <p>Everything in Monthly, one payment, all future updates and priority support.</p>
     </button>
   </div>
@@ -98,7 +100,7 @@
   <button type="button" class="bd-cta" id="bdCta">Continue with Lifetime · ৳999</button>
 
   <p class="bd-foot">Already paid? <a href="/feedback">Get help with your plan</a></p>
-  <p class="bd-foot" style="margin-top:10px">Not in Bangladesh? <a href="/#pricing" id="toUsd">See USD prices</a></p>
+  <p class="bd-foot" style="margin-top:10px"><span id="bdSwapQ">Not in Bangladesh?</span> <a href="?cur=usd" id="bdSwap">See USD prices</a></p>
 </main>
 
 <div class="ck" id="ck" role="dialog" aria-modal="true" aria-labelledby="ckTitle">
@@ -115,7 +117,7 @@
       <label id="ckPromoWrap" hidden>Promo code<input id="ckPromo" autocomplete="off"></label>
       <p class="ck-fail" id="ckFail" role="alert" hidden></p>
       <button type="submit" class="ck-go" id="ckGo">Continue to payment</button>
-      <p class="ck-secure">You’ll pay on SSLCommerz’s secure page by card, bKash, Nagad, Rocket or net banking.</p>
+      <p class="ck-secure" id="ckSecure">You’ll pay on SSLCommerz’s secure page by card, bKash, Nagad, Rocket or net banking.</p>
     </form>
   </div>
 </div>
@@ -135,7 +137,7 @@
       </a>
       <a class="btn btn-closing-light" href="/help">Keyboard shortcuts</a>
     </div>
-    <span class="closing-meta" data-version>Free plan · macOS 13+ · Apple silicon &amp; Intel</span>
+    <span class="closing-meta" data-version>7-day free trial · macOS 13+ · Apple silicon &amp; Intel</span>
   </section>
 
   <footer class="closing-footer">
@@ -185,26 +187,49 @@
 </div>
 
 <script type="module">
-import '/js/site.js?v=46';
+import '/js/site.js?v=47';
 const TAKA = '<svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>';
 const plans = [...document.querySelectorAll('.bd-plan')];
 const cta = document.getElementById('bdCta');
 let sel = plans.find(p => p.dataset.plan === new URLSearchParams(location.search).get('plan')) || plans.find(p => p.getAttribute('aria-checked') === 'true');
+const $ = id => document.getElementById(id);
 const fmt = n => Number(n).toLocaleString('en-US');
+const qs = new URLSearchParams(location.search);
+let cur = qs.get('cur') === 'usd' ? 'USD' : 'BDT';
+const sym = () => (cur === 'USD' ? '<span class="bd-usd">$</span>' : TAKA);
+const price = p => (cur === 'USD' ? p.dataset.usd : fmt(p.dataset.bdt));
+const COPY = {
+  BDT: ['Bangladesh · Pay in taka', 'Get Stashbar in taka', 'Pay in BDT by card or mobile banking. Your plan unlocks on your Stashbar account once the payment is confirmed, and the receipt arrives by email.', 'Not in Bangladesh?', 'See USD prices', 'Pay in taka', 'You’ll pay on SSLCommerz’s secure page by card, bKash, Nagad, Rocket or net banking.'],
+  USD: ['Worldwide · Pay in US dollars', 'Get Stashbar', 'Pay in USD by Visa, Mastercard or Amex. Your plan unlocks on your Stashbar account once the payment is confirmed, and the receipt arrives by email.', 'In Bangladesh?', 'See taka prices', 'Pay in USD', 'You’ll pay by card on SSLCommerz’s secure page.'],
+};
 const pick = p => {
   sel = p;
   plans.forEach(x => x.setAttribute('aria-checked', String(x === p)));
-  cta.innerHTML = `Continue with ${p.dataset.name} · ${TAKA}${fmt(p.dataset.price)}`;
-  history.replaceState(null, '', `?plan=${p.dataset.plan}`);
+  cta.innerHTML = `Continue with ${p.dataset.name} · ${sym()}${price(p)}`;
+  history.replaceState(null, '', `?plan=${p.dataset.plan}${cur === 'USD' ? '&cur=usd' : ''}`);
 };
 plans.forEach(p => p.addEventListener('click', () => pick(p)));
-pick(sel);
+const setCur = c => {
+  cur = c;
+  const t = COPY[c];
+  document.documentElement.dataset.cur = c;
+  $('bdEye').textContent = t[0]; $('bdH1').textContent = t[1]; $('bdLead').textContent = t[2];
+  $('bdSwapQ').textContent = t[3]; $('bdSwap').textContent = t[4];
+  $('bdSwap').href = c === 'USD' ? '?cur=bdt' : '?cur=usd';
+  $('ckSecure').textContent = t[6];
+  $('ckPhone').placeholder = c === 'USD' ? '+1 415 555 0123' : '01712345678';
+  plans.forEach(p => { p.querySelector('.bd-amt').innerHTML = sym() + price(p); });
+  try { localStorage.setItem('sb_currency', c); } catch (e) {}
+  pick(sel);
+};
+$('bdSwap').addEventListener('click', e => { e.preventDefault(); setCur(cur === 'USD' ? 'BDT' : 'USD'); });
+
+setCur(cur);
 
 const ck = document.getElementById('ck'), form = document.getElementById('ckForm');
-const $ = id => document.getElementById(id);
 const open = () => {
-  $('ckTitle').textContent = `Pay in taka · Stashbar ${sel.dataset.name}`;
-  $('ckPrice').innerHTML = TAKA + fmt(sel.dataset.price);
+  $('ckTitle').textContent = `${COPY[cur][5]} · Stashbar ${sel.dataset.name}`;
+  $('ckPrice').innerHTML = sym() + price(sel);
   $('ckPer').textContent = sel.dataset.per;
   $('ckFail').hidden = true;
   ck.classList.add('on'); document.body.style.overflow = 'hidden';
@@ -223,18 +248,18 @@ const err = (id, msg) => { $(id).setAttribute('aria-invalid', msg ? 'true' : 'fa
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const name = $('ckName').value.trim(), email = $('ckEmail').value.trim();
-  const phone = $('ckPhone').value.replace(/[\s-]/g, '').replace(/^\+?88/, '');
+  const raw = $('ckPhone').value.replace(/[\s()-]/g, ''), phone = cur === 'USD' ? raw : raw.replace(/^\+?88/, '');
   const ok = [
     err('ckName', name.length < 2 ? 'Enter your full name.' : ''),
     err('ckEmail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : 'Enter a valid email.'),
-    err('ckPhone', /^01[3-9]\d{8}$/.test(phone) ? '' : 'Enter an 11-digit Bangladeshi number, like 01712345678.'),
+    err('ckPhone', cur === 'USD' ? (/^\+?\d{6,16}$/.test(phone) ? '' : 'Enter your phone number with country code.') : (/^01[3-9]\d{8}$/.test(phone) ? '' : 'Enter an 11-digit Bangladeshi number, like 01712345678.')),
   ].every(Boolean);
   if (!ok) { form.querySelector('[aria-invalid="true"]').focus(); return; }
   const go = $('ckGo'), fail = $('ckFail');
   go.disabled = true; go.textContent = 'Opening secure checkout…'; fail.hidden = true;
   try {
     const r = await fetch('/api/pay/init', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan: sel.dataset.plan, name, email, phone, promo: $('ckPromo').value.trim() }) });
+      body: JSON.stringify({ plan: sel.dataset.plan, currency: cur, name, email, phone, promo: $('ckPromo').value.trim() }) });
     const data = await r.json().catch(() => ({}));
     if (r.ok && data.url) { location.href = data.url; return; }
     fail.textContent = data.error || 'Checkout couldn’t open. Please try again in a minute.';
@@ -243,7 +268,6 @@ form.addEventListener('submit', async e => {
   }
   fail.hidden = false; go.disabled = false; go.textContent = 'Continue to payment';
 });
-$('toUsd').addEventListener('click', () => { try { localStorage.setItem('sb_currency', 'USD'); } catch (e) {} });
 </script>
 </body>
 </html>
