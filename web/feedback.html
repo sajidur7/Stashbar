@@ -6,7 +6,7 @@
 <title>Send feedback · Stashbar</title>
 <meta name="description" content="Bug, idea or a thank-you. Every message is read by the people who build Stashbar.">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=41">
+<link rel="stylesheet" href="/css/site.css?v=43">
 <style>
 .fb{padding:40px 48px 48px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px}
 .fb-form{display:flex;flex-direction:column;gap:22px}
@@ -16,7 +16,7 @@
 .kind{height:38px;padding:0 16px;display:flex;align-items:center;border-radius:var(--r-c);border:1px solid var(--line);background:#fff;font:400 13px var(--font);color:var(--ink);cursor:pointer;transition:background-color .15s,border-color .15s}
 .kind:hover{background:var(--beige)}
 .kind[aria-pressed="true"]{background:var(--charcoal);border-color:var(--charcoal);color:#fff;font-weight:500}
-.fb textarea{min-height:160px;resize:vertical;padding:16px;border-radius:var(--r-l);border:1px solid var(--ink);font:400 14px/1.55 var(--font);color:var(--ink);outline:none;background:#fff}
+.fb textarea{height:160px;min-height:160px;resize:none;padding:16px;border-radius:var(--r-l);border:1px solid var(--ink);font:400 14px/1.55 var(--font);color:var(--ink);outline:none;background:#fff}
 .fb textarea:focus,.fb input[type=email]:focus{box-shadow:0 0 0 3px rgba(228,242,34,.6)}
 .drop{min-height:88px;border-radius:var(--r-l);border:1px dashed var(--muted-dark);display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--muted);cursor:pointer;padding:12px;text-align:center;transition:background-color .15s,border-color .15s}
 .drop:hover,.drop.over{background:var(--beige);border-color:var(--ink)}
@@ -33,13 +33,14 @@
 .fb-send{align-self:flex-start}
 .fb-note{font-size:13px;color:var(--muted);margin:0}
 .fb-side{display:flex;flex-direction:column;gap:12px;margin-top:118px}
-.side{padding:22px;border-radius:var(--r-l);display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit}
+.side{padding:22px;border-radius:var(--r-l);display:flex;flex-direction:column;justify-content:center;gap:10px;text-decoration:none;color:inherit}
 .side-dark{background:var(--charcoal);color:#fff}
 .side-dark b{font-weight:500;font-size:36px;letter-spacing:-.04em;color:var(--accent);line-height:1}
 .side-dark span{font-size:13px;color:var(--muted-dark)}
 .side-beige{background:var(--beige);transition:background-color .15s}
 .side-beige:hover{background:var(--line)}
-.side-line{border:1px solid var(--line)}
+.side-line{border:1px solid var(--line);padding:14px 22px;gap:4px}
+.side-line .m{line-height:1.45}
 .side b.t{font-weight:400;font-size:14px}
 .side span.m{font-size:13px;color:var(--muted)}
 .sent{display:none;padding:22px;border-radius:var(--r-l);background:var(--beige);gap:8px;flex-direction:column}
@@ -204,10 +205,23 @@ import '/js/site.js?v=42';
 const TO = 'incognitoshimul@gmail.com';
 // Line the side cards up with the top of the "What happened?" box.
 const side = document.querySelector('.fb-side'), box = document.getElementById('msg');
+// Each side card matches the form box beside it: "< 24h" = "What happened?" box,
+// "We never include" = screenshot box (same top and same height).
+const shotBox = document.getElementById('drop');
+const cards = side.querySelectorAll('.side');
 const align = () => {
-  if (matchMedia('(max-width:900px)').matches) { side.style.marginTop = ''; return; }
+  const [c1, c2] = cards;
+  [side, c1, c2].forEach(e => { e.style.marginTop = ''; e.style.height = ''; });
+  shotBox.style.minHeight = '';
+  if (matchMedia('(max-width:900px)').matches) return;
   side.style.marginTop = '0px';
   side.style.marginTop = Math.max(0, box.getBoundingClientRect().top - side.getBoundingClientRect().top) + 'px';
+  c1.style.height = box.getBoundingClientRect().height + 'px';
+  // If the card's text needs more room than the screenshot box, grow both to the same height.
+  const h = Math.max(shotBox.getBoundingClientRect().height, c2.scrollHeight);
+  shotBox.style.minHeight = h + 'px';
+  c2.style.height = h + 'px';
+  c2.style.marginTop = (shotBox.getBoundingClientRect().top - box.getBoundingClientRect().bottom - 12) + 'px'; // 12 = column gap
 };
 addEventListener('resize', align); document.fonts.ready.then(align); align();
 let kind = 'Bug';
