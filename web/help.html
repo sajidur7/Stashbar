@@ -6,16 +6,30 @@
 <title>Stashbar Help</title>
 <meta name="description" content="Every Stashbar shortcut, plus answers to common questions.">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=17">
+<link rel="stylesheet" href="/css/site.css?v=19">
 </head>
 <body>
-<div class="wrap">
-  <header class="sub-nav">
-    <a class="brand" href="/"><img src="/assets/brand/app-icon-accent.svg" width="28" height="28" alt="">Stashbar</a>
-    <div class="spacer"></div>
-    <nav class="tabs"><a class="tab" href="/help" aria-current="page">Help</a><a class="tab" href="/privacy">Privacy</a></nav>
-    <a class="btn btn-dark btn-sm" data-download href="#">Download</a>
+<div class="nav-wrap">
+  <header class="nav">
+    <a class="brand" href="/">
+      <img src="/assets/brand/app-icon-accent.svg" width="24" height="24" alt="">
+      <span>Stashbar</span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/#demo">Desktop</a>
+      <a href="/#features">Features</a>
+      <a href="/#how">How it works</a>
+      <a href="/#faq">FAQ</a>
+      <a href="/help" aria-current="page">Help</a>
+      <a href="/feedback">Feedback</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+    <div class="nav-end">
+      <a class="nav-get-btn" data-download href="#">Get Stashbar</a>
+    </div>
   </header>
+</div>
+<div class="wrap">
   <main>
     <section class="page-hero">
       <span class="label">HELP &amp; KEYBOARD GUIDE</span>
@@ -54,7 +68,7 @@
         <div class="topic" data-s><img src="/assets/icons/log-out.svg" width="20" height="20" alt=""><b>Quit Stashbar fully</b><span>Right-click the pin in the menu bar → Quit Stashbar. Nothing keeps running afterwards.</span></div>
         <div class="topic" data-s><img src="/assets/icons/import.svg" width="20" height="20" alt=""><b>Import bookmarks</b><span>Export bookmarks as HTML from Safari, Chrome, Arc or Firefox, then Settings → Data &amp; privacy → Import.</span></div>
       </div>
-      <div class="stuck"><img src="/assets/icons/mail.svg" width="20" height="20" alt="" style="filter:invert(1)"><span>Still stuck? We reply within a day.</span><a class="btn btn-primary btn-sm" href="mailto:incognitoshimul@gmail.com?subject=Stashbar%20help">Email us</a></div>
+      <div class="stuck"><img src="/assets/icons/mail.svg" width="20" height="20" alt="" style="filter:invert(1)"><span>Still stuck? We reply within a day.</span><a class="btn btn-primary btn-sm" href="/feedback">Send feedback</a></div>
     </section>
   </main>
   <footer class="page-foot"><span>© 2026 Stashbar</span><a href="/" style="text-decoration:none">stashbar.vercel.app</a></footer>
