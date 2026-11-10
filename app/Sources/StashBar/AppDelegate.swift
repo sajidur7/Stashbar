@@ -163,6 +163,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSM
             return
         }
         if !popover.isShown {
+            // One surface at a time: the popover replaces any open Stashbar window.
+            Windows.shared.hideAll()
             popoverUI.reset()
             NSApp.activate(ignoringOtherApps: true)
             popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
@@ -170,6 +172,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate, NSM
             popoverUI.focusSearch.toggle()
             Task { await Store.shared.syncNow() }
         }
+    }
+
+    func closePopover() {
+        if popover.isShown { popover.performClose(nil) }
     }
 
     private func quickStash() {

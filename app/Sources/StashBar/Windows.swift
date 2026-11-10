@@ -98,9 +98,35 @@ final class Windows: NSObject, NSWindowDelegate {
         return w
     }
 
+    /// One Stashbar surface at a time: showing a window hides the popover and every other
+    /// Stashbar window, and the new window takes the place of the one it replaces.
     private func present(_ w: NSWindow) {
+        let previous = [canvasWindow, settingsWindow, onboardingWindow]
+            .compactMap { $0 }
+            .first { $0 !== w && $0.isVisible }
+        if let previous, !w.isVisible { placeCentered(w, over: previous) }
+        hideAll(except: w)
         NSApp.activate(ignoringOtherApps: true)
         w.makeKeyAndOrderFront(nil)
+    }
+
+    /// Hides the popover and all Stashbar windows except `keep`. State is kept, so going back restores them.
+    func hideAll(except keep: NSWindow? = nil) {
+        (NSApp.delegate as? AppDelegate)?.closePopover()
+        for w in [canvasWindow, settingsWindow, onboardingWindow].compactMap({ $0 }) where w !== keep {
+            w.orderOut(nil)
+        }
+    }
+
+    private func placeCentered(_ w: NSWindow, over old: NSWindow) {
+        let c = NSPoint(x: old.frame.midX, y: old.frame.midY)
+        var f = w.frame
+        f.origin = NSPoint(x: c.x - f.width / 2, y: c.y - f.height / 2)
+        if let vis = (old.screen ?? NSScreen.main)?.visibleFrame {
+            f.origin.x = min(max(f.origin.x, vis.minX), vis.maxX - f.width)
+            f.origin.y = min(max(f.origin.y, vis.minY), vis.maxY - f.height)
+        }
+        w.setFrame(f, display: false)
     }
 
     func showCanvas(detail: String? = nil, addLink: Bool = false, view: CanvasView? = nil) {
@@ -125,7 +151,10 @@ final class Windows: NSObject, NSWindowDelegate {
     }
 
     func closeSettingsAndGoBack() {
-        settingsWindow?.close()
+        switch settingsNav.back {
+        case .popover: settingsWindow?.orderOut(nil)
+        default: break // showCanvas below hides Settings and puts the canvas where it was
+        }
         switch settingsNav.back {
         case .links: showCanvas()
         case .link(let id): showCanvas(detail: id)
