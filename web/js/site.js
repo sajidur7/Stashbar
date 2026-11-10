@@ -1057,21 +1057,46 @@ if (wfShowcase) {
 
     const navOffset = () => (document.querySelector('.nav-wrap')?.offsetHeight || 52) + 24;
 
+    const grid = pin ? pin.querySelector('.wf-grid') : null;
+    let compact = false, lastW = 0;
+
+    // Compact (narrow) mode: a 4-segment progress bar above the open step.
+    let dots = null;
+    if (pin) {
+      dots = document.createElement('div');
+      dots.className = 'wf-dots';
+      dots.setAttribute('aria-hidden', 'true');
+      dots.innerHTML = wfItems.map(() => '<span><i></i></span>').join('');
+      pin.querySelector('.wf-list')?.prepend(dots);
+    }
+
     const layout = () => {
-      if (!track || !pin) return;
+      if (!track || !pin || !grid) return;
+      lastW = window.innerWidth;
       track.style.height = '';
       pin.classList.remove('is-pinned');
-      const pinH = pin.offsetHeight;
+      grid.style.zoom = '';
+      wfScrollMode = true; // every window size: scrolling drives the steps
+      compact = window.innerWidth <= 900;
+      pin.classList.toggle('is-compact', compact);
       const vh = window.innerHeight;
-      // Scroll-driven on any desktop-width window (also with Reduce Motion: it follows
-      // the user's own scrolling, it doesn't auto-play). Phones keep the auto-advance.
-      wfScrollMode = window.innerWidth > 900;
-      if (!wfScrollMode) { startWfLoop(); return; }
-      // Centre the block; if it's taller than the window, pin it just under the header.
+      const avail = vh - navOffset() - 16;
+      // Measure the tallest step so the pinned block never jumps or overflows.
+      const keep = wfIdx;
+      let pinH = 0;
+      wfItems.forEach((_, i) => { setWfStep(i, true); pinH = Math.max(pinH, pin.getBoundingClientRect().height); });
+      setWfStep(keep, true);
+      // Too tall for the window? Scale the whole block down to fit (not below 55%).
+      let z = 1;
+      if (pinH > avail) {
+        z = Math.max(0.55, avail / pinH);
+        grid.style.zoom = z.toFixed(3);
+        pinH = pinH * z;
+      }
       pinTop = Math.max(navOffset(), Math.round((vh - pinH) / 2));
       if (pinH + pinTop > vh) pinTop = navOffset();
       dist = Math.round(vh * STEP_VH * wfItems.length);
-      track.style.height = (pinH + dist) + 'px';
+      track.style.height = Math.ceil(pinH + dist) + 'px';
       pin.style.top = pinTop + 'px';
       pin.classList.add('is-pinned');
       onScroll();
@@ -1086,8 +1111,12 @@ if (wfShowcase) {
         const pos = p * wfItems.length;
         const idx = Math.floor(pos);
         if (idx !== wfIdx) setWfStep(idx, true);
+        const frac = pos - idx;
         const fill = wfItems[idx]?.querySelector('.wf-line-fill');
-        if (fill) fill.style.width = ((pos - idx) * 100).toFixed(2) + '%';
+        if (fill) fill.style.width = (frac * 100).toFixed(2) + '%';
+        if (dots) dots.querySelectorAll('i').forEach((el, i) => {
+          el.style.width = (i < idx ? 100 : i === idx ? frac * 100 : 0).toFixed(2) + '%';
+        });
       });
     };
 
@@ -1099,7 +1128,7 @@ if (wfShowcase) {
 
     if (track && pin) {
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', layout);
+      window.addEventListener('resize', () => { if (window.innerWidth !== lastW || window.innerWidth > 900) layout(); });
       window.addEventListener('load', layout);
       layout();
     }

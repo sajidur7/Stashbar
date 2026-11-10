@@ -1230,7 +1230,7 @@ body{overflow-x:clip}
   height:25px;padding:0 9px;border-radius:7px;background:var(--beige);
   font-size:11.5px;color:var(--muted);display:inline-flex;align-items:center;flex-shrink:0;
 }
-.wui-airgap{display:flex;justify-content:center}
+.wui-airgap{display:flex;justify-content:center;min-width:0;max-width:100%}
 .wui-airgap-badge{
   width:100%;padding:12px 14px;border-radius:11px;
   background:var(--charcoal);color:rgba(255,255,255,.9);
@@ -1238,7 +1238,10 @@ body{overflow-x:clip}
   font-size:12px;font-weight:500;
   transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease;
 }
-.wui-airgap-badge img{filter:invert(1);opacity:.8}
+.wui-airgap-badge img{filter:invert(1);opacity:.8;flex:none}
+/* Never wider than its card: shrink and wrap the text on narrow screens */
+.wui-airgap-badge{min-width:0;max-width:100%;text-align:center}
+.wui-airgap-badge span{min-width:0;overflow-wrap:anywhere}
 .wf-stage:hover .wui-airgap-badge{
   transform:translateY(-2px);box-shadow:0 8px 18px -8px rgba(12,10,8,.25);
 }
@@ -1731,3 +1734,19 @@ body{overflow-x:clip}
   text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
 .pr-currency button:hover{text-decoration-color:var(--ink)}
 .pr-taka{display:inline-block;height:.72em;width:auto;margin-right:.08em;vertical-align:baseline}
+
+/* Compact pinned mode (narrow windows): progress bar + only the open step, preview below */
+.wf-dots{display:none}
+.wf-pin.is-compact .wf-dots{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.wf-dots span{height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.wf-dots i{display:block;height:100%;width:0;background:var(--ink)}
+.wf-pin.is-compact .wf-item:not(.is-active){display:none}
+.wf-pin.is-compact .wf-item .wf-line{display:none}
+.wf-pin.is-compact .wf-list{height:auto}
+.wf-pin.is-compact .wf-head{padding:0 0 12px}
+.wf-pin.is-compact .wf-grid{gap:20px}
+
+/* Scroll-driven privacy workflow: the grid pins while the 4 steps open one by one */
+.wf-track{position:relative}
+.wf-pin.is-pinned{position:sticky;z-index:1}
+.wf-pin.is-pinned .wf-item .wf-line-fill{transition:none}
