@@ -32,7 +32,7 @@
 .attach input:focus-visible + .check{outline:2px solid var(--ink);outline-offset:2px}
 .fb-send{align-self:flex-start}
 .fb-note{font-size:13px;color:var(--muted);margin:0}
-.fb-side{display:flex;flex-direction:column;gap:12px}
+.fb-side{display:flex;flex-direction:column;gap:12px;margin-top:118px}
 .side{padding:22px;border-radius:var(--r-l);display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit}
 .side-dark{background:var(--charcoal);color:#fff}
 .side-dark b{font-weight:500;font-size:36px;letter-spacing:-.04em;color:var(--accent);line-height:1}
@@ -44,7 +44,7 @@
 .side span.m{font-size:13px;color:var(--muted)}
 .sent{display:none;padding:22px;border-radius:var(--r-l);background:var(--beige);gap:8px;flex-direction:column}
 .sent.on{display:flex}
-@media (max-width:900px){.fb{grid-template-columns:1fr}}
+@media (max-width:900px){.fb{grid-template-columns:1fr}.fb-side{margin-top:0!important}}
 @media (max-width:720px){.fb{padding:32px 16px}.fb-row{grid-template-columns:1fr}}
 </style>
 </head>
@@ -180,6 +180,14 @@
 <script type="module">
 import '/js/site.js?v=18';
 const TO = 'incognitoshimul@gmail.com';
+// Line the side cards up with the top of the "What happened?" box.
+const side = document.querySelector('.fb-side'), box = document.getElementById('msg');
+const align = () => {
+  if (matchMedia('(max-width:900px)').matches) { side.style.marginTop = ''; return; }
+  side.style.marginTop = '0px';
+  side.style.marginTop = Math.max(0, box.getBoundingClientRect().top - side.getBoundingClientRect().top) + 'px';
+};
+addEventListener('resize', align); document.fonts.ready.then(align); align();
 let kind = 'Bug';
 document.querySelectorAll('.kind').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.kind').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
