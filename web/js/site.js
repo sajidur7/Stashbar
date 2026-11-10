@@ -958,6 +958,7 @@ if (wfShowcase) {
   let wfHoverPaused = false;
   let wfInView = false;
   let wfRaf = 0;
+  let wfScrollMode = false; // true: steps are driven by scroll position, not the timer
 
   const setWfStep = (nextIdx, resetTimer = true) => {
     wfIdx = ((nextIdx % wfItems.length) + wfItems.length) % wfItems.length;
@@ -989,7 +990,7 @@ if (wfShowcase) {
     const dt = Math.min(now - wfLastTs, 120);
     wfLastTs = now;
 
-    if (!reduceMotion && wfInView && !wfHoverPaused && !document.hidden) {
+    if (!reduceMotion && !wfScrollMode && wfInView && !wfHoverPaused && !document.hidden) {
       wfElapsed += dt;
       const pct = Math.min((wfElapsed / STEP_MS) * 100, 100);
       const activeFill = wfItems[wfIdx]?.querySelector('.wf-line-fill');
@@ -1017,6 +1018,7 @@ if (wfShowcase) {
     const head = item.querySelector('.wf-head');
     if (!head) return;
     head.addEventListener('click', () => {
+      if (wfScrollMode && wfScrollTo) { wfScrollTo(i); return; }
       setWfStep(i, true);
       startWfLoop();
     });
@@ -1044,6 +1046,61 @@ if (wfShowcase) {
       wfLastTs = 0;
     }
   });
+
+  // ---- Scroll-driven steps: the block pins while each of the 4 steps opens in turn ----
+  var wfScrollTo = null;
+  {
+    const track = document.getElementById('wfTrack');
+    const pin = document.getElementById('wfPin');
+    const STEP_VH = 0.55; // scroll distance per step, as a share of the viewport height
+    let pinTop = 96, dist = 0, ticking = false;
+
+    const navOffset = () => (document.querySelector('.nav-wrap')?.offsetHeight || 52) + 24;
+
+    const layout = () => {
+      if (!track || !pin) return;
+      track.style.height = '';
+      pin.classList.remove('is-pinned');
+      const pinH = pin.offsetHeight;
+      const vh = window.innerHeight;
+      // Pin only when the whole block fits on screen and motion is allowed.
+      wfScrollMode = !reduceMotion && window.innerWidth > 900 && pinH + navOffset() + 24 <= vh;
+      if (!wfScrollMode) { startWfLoop(); return; }
+      pinTop = Math.max(navOffset(), Math.round((vh - pinH) / 2));
+      dist = Math.round(vh * STEP_VH * wfItems.length);
+      track.style.height = (pinH + dist) + 'px';
+      pin.style.top = pinTop + 'px';
+      pin.classList.add('is-pinned');
+      onScroll();
+    };
+
+    const onScroll = () => {
+      if (!wfScrollMode || ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const p = Math.min(Math.max((pinTop - track.getBoundingClientRect().top) / dist, 0), 0.99999);
+        const pos = p * wfItems.length;
+        const idx = Math.floor(pos);
+        if (idx !== wfIdx) setWfStep(idx, true);
+        const fill = wfItems[idx]?.querySelector('.wf-line-fill');
+        if (fill) fill.style.width = ((pos - idx) * 100).toFixed(2) + '%';
+      });
+    };
+
+    wfScrollTo = i => {
+      const trackTop = track.getBoundingClientRect().top + window.scrollY;
+      const y = trackTop - pinTop + (dist / wfItems.length) * (i + 0.15);
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    };
+
+    if (track && pin) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', layout);
+      window.addEventListener('load', layout);
+      layout();
+    }
+  }
 
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(entries => {
