@@ -41,11 +41,10 @@ if (heroPin && heroStage && heroTop) {
   let heroLastTs = 0;
 
   const heroLerp = (a, b, t) => a + (b - a) * t;
-  // Ease-in-out (cubic): soft start and soft landing, like a camera pulling back.
-  const heroEase = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const heroEase = t => 1 - Math.pow(1 - t, 2.25);
 
   const heroClearStageOverrides = () => {
-    ['position', 'top', 'left', 'width', 'height', 'borderRadius', 'zIndex', 'transform', 'transformOrigin', 'willChange'].forEach(p => {
+    ['position', 'top', 'left', 'width', 'height', 'borderRadius', 'zIndex'].forEach(p => {
       heroStage.style[p] = '';
     });
     if (macAppStack) {
@@ -86,28 +85,19 @@ if (heroPin && heroStage && heroTop) {
       ? (heroStageDocTop - scrollY)
       : (heroStageDocTop - heroDwell);
 
-    // GPU-only: the stage keeps its settled size (no layout per frame) and is
-    // scaled/moved with a single transform from "covers the viewport" to its resting box.
-    const w = heroStageWidth, h = heroStageHeight;
-    const s0 = Math.max(vpW / w, vpH / h);
-    const s = heroLerp(s0, 1, e);
-    const cx = heroLerp(vpW / 2, heroStageLeft + w / 2, e);
-    const cy = heroLerp(vpH / 2, settledTop + h / 2, e);
-    const radius = (18 * e) / s; // visual radius grows 0 → 18px regardless of scale
+    const stageTop = heroLerp(0, settledTop, e);
+    const w = heroLerp(vpW, heroStageWidth, e);
+    const h = heroLerp(vpH, heroStageHeight, e);
+    const left = heroLerp(0, heroStageLeft, e);
+    const radius = heroLerp(0, 18, e);
 
-    if (!heroPinned || heroStage.style.position !== 'fixed') {
-      heroStage.style.position = 'fixed';
-      heroStage.style.top = '0px';
-      heroStage.style.left = '0px';
-      heroStage.style.width = w + 'px';
-      heroStage.style.height = h + 'px';
-      heroStage.style.zIndex = '45';
-      heroStage.style.transformOrigin = '50% 50%';
-      heroStage.style.willChange = 'transform';
-    }
-    heroStage.style.transform =
-      `translate3d(${(cx - w / 2).toFixed(2)}px, ${(cy - h / 2).toFixed(2)}px, 0) scale(${s.toFixed(5)})`;
+    heroStage.style.position = 'fixed';
+    heroStage.style.top = stageTop.toFixed(2) + 'px';
+    heroStage.style.left = left.toFixed(2) + 'px';
+    heroStage.style.width = w.toFixed(2) + 'px';
+    heroStage.style.height = h.toFixed(2) + 'px';
     heroStage.style.borderRadius = radius.toFixed(2) + 'px';
+    heroStage.style.zIndex = '45';
 
     if (macAppStack && settledStackW > 0) {
       const stackScale = heroLerp(1.024, 1, e);
@@ -130,8 +120,7 @@ if (heroPin && heroStage && heroTop) {
     heroLastTs = now;
 
     targetP = heroDwell > 0 ? Math.min(Math.max(window.scrollY / heroDwell, 0), 1) : 1;
-    // Frame-rate independent damping (~250ms to catch up): silky on 60Hz and 120Hz screens.
-    const alpha = 1 - Math.exp(-dt * 0.012);
+    const alpha = 1 - Math.exp(-dt * 0.018);
     smoothP += (targetP - smoothP) * alpha;
 
     if (Math.abs(targetP - smoothP) < 0.0008) {

@@ -1676,3 +1676,33 @@ body{overflow-x:clip}
   .pp{padding:32px 16px}
   .page-foot{padding:24px 16px}
 }
+
+/* ==========================================================================
+   Pricing
+   ========================================================================== */
+.pr-head-text{text-align:center;align-items:center;margin:0 auto}
+.pr-sub{font-size:17px;color:var(--muted);margin:14px 0 0}
+.pr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1120px;margin:56px auto 0}
+.pr-card{border-radius:var(--r-l);background:var(--beige);border:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+.pr-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 18px;font-size:18px;font-weight:500;letter-spacing:-.02em}
+.pr-badge{font-size:12px;font-weight:500;padding:4px 10px;border-radius:var(--r-s);background:var(--ink);color:var(--accent)}
+.pr-body{flex:1;margin:0 4px 4px;padding:24px 22px 28px;border-radius:12px;background:#fff;display:flex;flex-direction:column;gap:18px}
+.pr-card.is-popular{background:var(--accent);border-color:var(--accent);box-shadow:0 24px 60px -18px rgba(12,10,8,.18)}
+.pr-icon{width:44px;height:44px;border-radius:var(--r-c);background:var(--ink);display:grid;place-items:center}
+.pr-icon img{filter:invert(1)}
+.pr-blurb{margin:0;font-size:15px;color:var(--muted)}
+.pr-price{display:flex;align-items:baseline;gap:8px}
+.pr-price b{font-weight:500;font-size:52px;letter-spacing:-.045em;line-height:1}
+.pr-price span{font-size:14px;color:var(--muted)}
+.pr-cta{display:flex;align-items:center;justify-content:center;height:48px;border-radius:var(--r-c);font-weight:500;font-size:15px;text-decoration:none;transition:background-color .15s,transform .1s}
+.pr-cta:active{transform:scale(.98)}
+.pr-cta-out{border:1px solid var(--line);color:var(--ink);background:#fff}
+.pr-cta-out:hover{background:var(--beige)}
+.pr-cta-pri{background:var(--accent);color:var(--ink)}
+.pr-cta-pri:hover{background:#d8e61a}
+.pr-cta-dark{background:var(--ink);color:#fff}
+.pr-cta-dark:hover{background:var(--graphite)}
+.pr-feats{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column;gap:14px}
+.pr-feats li{display:flex;align-items:center;gap:12px;font-size:15px}
+.pr-feats svg{width:20px;height:20px;flex:none;color:var(--ink)}
+@media (max-width:1000px){.pr-grid{grid-template-columns:1fr;max-width:460px}}
