@@ -349,8 +349,13 @@ struct ShortcutStep: View {
                     Spacer(minLength: 4)
                     if !recording.isRecording {
                         ShortcutPicker(recording: recording) {
-                            HStack(spacing: 6) { Icon(name: "pencil-edit", size: 14, color: Tok.text); Text("Change").font(13).underline() }
-                                .foregroundColor(Tok.text)
+                            // Plain word with a thick accent underline set a little below the text, like the site's links.
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Change").font(13).foregroundColor(Tok.text)
+                                Rectangle().fill(Palette.accent).frame(height: 2)
+                            }
+                            .fixedSize()
+                            .contentShape(Rectangle())
                         }
                     }
                 }
