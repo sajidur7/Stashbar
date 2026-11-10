@@ -1760,3 +1760,26 @@ body{overflow-x:clip}
   .wf-pin.is-pinned .wf-stage:hover .wf-top-pill{transform:translate3d(0,calc(var(--wf-float,0) * -9px),0);transition:none}
 }
 .pr-price b .pr-cur{font-size:inherit;color:inherit;letter-spacing:0;margin-right:.06em}
+
+/* ==========================================================================
+   Page-to-page transitions
+   Browsers with cross-document View Transitions (Chrome/Edge 126+, Safari 18.2+)
+   keep the header in place and glide the page in. Others get a JS fade (site.js).
+   ========================================================================== */
+@view-transition{navigation:auto}
+.nav-wrap{view-transition-name:site-nav}
+::view-transition-group(site-nav){animation-duration:.45s;animation-timing-function:cubic-bezier(.22,1,.36,1)}
+::view-transition-old(root){animation:sb-page-out .24s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:sb-page-in .52s cubic-bezier(.22,1,.36,1) .06s both}
+@keyframes sb-page-out{to{opacity:0;transform:translateY(-10px) scale(.995);filter:blur(2px)}}
+@keyframes sb-page-in{from{opacity:0;transform:translateY(18px)}}
+
+/* Fallback fade for browsers without cross-document View Transitions */
+html.pt-fallback body{animation:sb-page-in .5s cubic-bezier(.22,1,.36,1) both}
+html.pt-fallback.pt-leaving body{opacity:0;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease}
+
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+  html.pt-fallback body{animation:none}
+  html.pt-fallback.pt-leaving body{transition:none}
+}

@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto}</style>
 <title>Pay in taka · Stashbar</title>
 <meta name="description" content="Get Stashbar in Bangladeshi taka. Pay by card or mobile banking; your plan unlocks after the payment is confirmed.">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=45">
+<link rel="stylesheet" href="/css/site.css?v=46">
 <style>
 .ck [hidden]{display:none!important}
 .bd{max-width:1080px;margin:0 auto;padding:64px 48px 40px}
@@ -187,7 +188,7 @@ html[data-cur="USD"] .bd-flag{display:none}
 </div>
 
 <script type="module">
-import '/js/site.js?v=47';
+import '/js/site.js?v=48';
 const TAKA = '<svg class="pr-taka" viewBox="60 -784 472 786" aria-hidden="true"><path transform="scale(1,-1)" fill="currentColor" d="M280 -2Q207 -2 170.0 43.0Q133 88 133 178V711H194Q194 685 177.0 663.5Q160 642 130 642Q96 642 78.0 663.0Q60 684 60 712Q60 744 82.0 764.0Q104 784 139 784Q179 784 203.5 758.0Q228 732 228 682V168Q228 126 241.0 104.0Q254 82 289 82Q320 82 347.5 99.0Q375 116 395.5 143.0Q416 170 428.0 203.5Q440 237 440 269Q440 298 427.5 313.0Q415 328 382 328L388 401Q427 401 445.5 381.5Q464 362 464 334Q464 302 446.5 280.0Q429 258 394 258Q361 258 339.0 278.5Q317 299 317 334Q317 374 344.0 395.0Q371 416 411 416Q447 416 474.5 399.0Q502 382 517.0 350.5Q532 319 532 275Q532 225 513.5 176.0Q495 127 461.5 87.0Q428 47 382.0 22.5Q336 -2 280 -2ZM60 480V563H485V480Z"/></svg>';
 const plans = [...document.querySelectorAll('.bd-plan')];
 const cta = document.getElementById('bdCta');

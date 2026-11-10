@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto}</style>
 <title>Payment · Stashbar</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=45">
+<link rel="stylesheet" href="/css/site.css?v=46">
 <style>
 .pd{max-width:620px;margin:0 auto;padding:96px 24px 72px;text-align:center}
 .pd-ic{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 24px;background:var(--accent);font-size:28px;color:var(--ink)}
@@ -113,7 +114,7 @@
 </div>
 
 <script type="module">
-import '/js/site.js?v=47';
+import '/js/site.js?v=48';
 const q = new URLSearchParams(location.search), s = q.get('s') || 'fail', ref = (q.get('ref') || '').replace(/[^A-Za-z0-9_-]/g, '');
 const T = {
   ok: ['✓', 'Payment received.', 'Thanks! Sign in to Stashbar with the same email you paid with and your plan switches on. A receipt is on its way.'],

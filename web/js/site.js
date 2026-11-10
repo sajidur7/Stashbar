@@ -1400,3 +1400,26 @@ if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-mot
     if (animating) { cancelAnimationFrame(raf); raf = 0; animating = false; current = target = window.scrollY; }
   }, { passive: true }));
 })();
+
+// ---- Page transitions: fallback for browsers without cross-document View Transitions ----
+(() => {
+  const native = 'onpagereveal' in window && CSS.supports && CSS.supports('view-transition-name: a');
+  if (native || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const root = document.documentElement;
+  root.classList.add('pt-fallback');
+  // Coming back via the back button restores a faded page from cache; show it again.
+  addEventListener('pageshow', e => { if (e.persisted) root.classList.remove('pt-leaving'); });
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (a.target && a.target !== '_self') return;
+    if (a.hasAttribute('download') || a.hasAttribute('data-download')) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin) return;
+    // Same page, only the #hash changes: let the page scroll instead of fading.
+    if (url.pathname === location.pathname && url.search === location.search) return;
+    e.preventDefault();
+    root.classList.add('pt-leaving');
+    setTimeout(() => { location.href = url.href; }, 190);
+  });
+})();

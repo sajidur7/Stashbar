@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>@view-transition{navigation:auto}</style>
 <title>Stashbar Help</title>
 <meta name="description" content="Every Stashbar shortcut, plus answers to common questions.">
 <link rel="icon" href="/assets/brand/app-icon-accent.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/site.css?v=43">
+<link rel="stylesheet" href="/css/site.css?v=46">
 </head>
 <body>
 <div class="nav-wrap">
@@ -136,7 +137,7 @@
 </div>
 
 <script type="module">
-import '/js/site.js';
+import '/js/site.js?v=48';
 const q = document.getElementById('q');
 document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); q.focus(); } });
 q.addEventListener('input', () => {
