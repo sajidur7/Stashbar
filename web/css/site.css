@@ -436,6 +436,27 @@ body{overflow-x:clip}
   background:var(--graphite);display:flex;flex-direction:column;gap:12px;
 }
 .sb-acct-top{display:flex;align-items:center;gap:10px}
+.sb-acct-name{font-size:13px;line-height:1.25;color:#fff}
+.sb-acct-sub{font-size:12px;line-height:1.25;color:var(--muted-dark)}
+.sb-side-label{color:var(--muted-dark);padding:0 12px 6px}
+
+/* Light theme: sidebar matches the Mac app — beige #F4F2F0 with ink text. Dark theme keeps charcoal. */
+.mac-stage:not(.is-dark) .sb-sidebar{background:var(--beige);color:var(--ink);border-right:1px solid var(--line)}
+.mac-stage:not(.is-dark) .sb-nav-row,
+.mac-stage:not(.is-dark) .sb-tag-row{color:var(--ink)}
+.mac-stage:not(.is-dark) .sb-nav-row:hover,
+.mac-stage:not(.is-dark) .sb-tag-row:hover{background:rgba(12,10,8,.05)}
+.mac-stage:not(.is-dark) .sb-nav-row.is-active{background:var(--accent)}
+.mac-stage:not(.is-dark) .sb-nav-row img,
+.mac-stage:not(.is-dark) .sb-tag-row img,
+.mac-stage:not(.is-dark) .sb-guest-avatar.on-dark img{filter:none}
+.mac-stage:not(.is-dark) .sb-side-brand img{filter:invert(1)}
+.mac-stage:not(.is-dark) .sb-tag-row .cnt,
+.mac-stage:not(.is-dark) .sb-side-label,
+.mac-stage:not(.is-dark) .sb-acct-sub{color:var(--muted)}
+.mac-stage:not(.is-dark) .sb-acct-name{color:var(--ink)}
+.mac-stage:not(.is-dark) .sb-acct-card{background:#fff;border:1px solid var(--line)}
+.mac-stage:not(.is-dark) .sb-guest-avatar.on-dark{border-color:var(--muted)}
 
 .sb-right-area{
   min-width:0;min-height:0;
